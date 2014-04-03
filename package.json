@@ -1,0 +1,27 @@
+{
+  "name": "cantina-app-users-ui",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Drop-in UI for cantina-app-users",
+  "main": "cantina-app-users-ui.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cantina/cantina-app-users-ui.git"
+  },
+  "author": "Erin LeSavoy <erin@terraeclipse.com>",
+  "license": "none",
+  "bugs": {
+    "url": "https://github.com/cantina/cantina-app-users-ui/issues"
+  },
+  "homepage": "https://github.com/cantina/cantina-app-users-ui",
+  "dependencies": {
+    "cantina-app-users": "cantina/cantina-app-users#develop"
+  },
+  "devDependencies": {
+    "cantina": "cantina/cantina#3.x",
+    "mocha": "^1.18.2"
+  }
+}
