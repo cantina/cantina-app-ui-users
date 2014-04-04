@@ -22,6 +22,11 @@
   },
   "devDependencies": {
     "cantina": "cantina/cantina#3.x",
+    "cantina-web": "cantina/cantina-web#3.2.x",
+    "cantina-models": "cantina/cantina-models#3.1.x",
+    "cantina-mongo": "cantina/cantina-mongo#master",
+    "cantina-auth": "cantina/cantina-auth#3.x",
+    "cantina-redis": "cantina/cantina-redis#3.x",
     "mocha": "^1.18.2"
   }
 }

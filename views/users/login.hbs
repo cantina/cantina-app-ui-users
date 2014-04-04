@@ -1,0 +1,22 @@
+<form class="login account" action="/login" method="POST">
+  <div class="control-group row-fluid{{#if formErrors.email}} error{{/if}}{{#if formErrors.login}} error{{/if}} email">
+    <div class="span12">
+      <input name="email" type="text" autocomplete="off" id="email-login" class="input-block-level" placeholder="Email"
+             value="{{#if loginErrors}}{{values.email}}{{/if}}">
+      {{#if formErrors.email}}<span class="help-block">{{formErrors.email}}</span>{{/if}}
+    </div>
+  </div>
+  <div class="control-group row-fluid password{{#if formErrors.login}} error{{/if}}">
+    <div class="span12">
+      <input name="pass" type="password" autocomplete="off" id="password-login" class="input-block-level" placeholder="Password">
+      {{#if formErrors.login}}<span class="help-block">{{formErrors.login}}</span>{{/if}}
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span12">
+      <span class="forgot-password"><a href="/forgot">Forgot your password?</a></span>
+      <input type="hidden" name="op" value="login">
+      <input type="submit" class="btn btn-primary log-in-button pull-right" value="Submit">
+    </div>
+  </div>
+</form>
