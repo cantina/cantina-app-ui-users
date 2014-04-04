@@ -33,14 +33,11 @@ function processLogin (req, res, next) {
   if (!req.body.email || !req.body.pass) {
     res.formError('login', 'Email and password are both required.');
   }
-  if (req.body.recaptcha_challenge_field && !req.body.recaptcha_response_field) {
-    res.formError('recaptcha', 'Captcha is required.');
-  }
   if (res.formErrors) {
     return next();
   }
 
-  app.users.findByEmail(req.body.email.trim(), function (err, user) {
+  app.collections.users.find({email: req.body.email.trim()}, function (err, user) {
     if (err) return res.renderError(err);
     if (user) {
       if (app.users.checkPassword(req.body.pass, user._values.auth)){

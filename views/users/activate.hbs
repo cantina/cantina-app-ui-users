@@ -1,0 +1,41 @@
+<div class="form main complete-account clearfix">
+  <div class="content">
+    <div class="box-header">
+      <h3>Complete Your Account</h3>
+    </div>
+    <div class="account-teaser box-section">
+      <div class="row-fluid">
+        <div class="span4">
+          <span class="field-label">Name</span>
+          <span class="field-value">{{values.first_name}} {{values.last_name}}</span>
+        </div>
+        <div class="span8">
+          <span class="field-label">Email Address</span>
+          <span class="field-value">{{values.email}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="box-section">
+      <p class="instructions">Welcome! To complete the account registration process and begin adding information to your user profile, please choose a password below.</p>
+      <form class="complete account" id="activate" method="POST">
+        <div class="control-group{{#if formErrors.pass}} error{{/if}} pass">
+          <div class="controls">
+            <input name="pass" type="password" class="input-block-level" placeholder="Password">
+            {{#if formErrors.pass}} <span class="help-inline">{{formErrors.pass}}</span>{{/if}}
+          </div>
+        </div>
+        <div class="control-group{{#if formErrors.pass2}} error{{/if}} pass2">
+          <div class="controls">
+            <input name="pass2" type="password" class="input-block-level" placeholder="Re-enter password">
+            {{#if formErrors.pass2}} <span class="help-inline">{{formErrors.pass2}}</span>{{/if}}
+          </div>
+        </div>
+        <div class="control-group submit">
+          <div class="controls clearfix">
+            <input type="submit" class="btn btn-primary pull-right log-in-button" value="Get Started">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

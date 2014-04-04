@@ -27,6 +27,7 @@
     "cantina-mongo": "cantina/cantina-mongo#master",
     "cantina-auth": "cantina/cantina-auth#3.x",
     "cantina-redis": "cantina/cantina-redis#3.x",
+    "cantina-tokens": "cantina/cantina-tokens#3.x",
     "mocha": "^1.18.2"
   }
 }
