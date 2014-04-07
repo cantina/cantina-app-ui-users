@@ -5,6 +5,8 @@ app.boot(function (err) {
 
   require('cantina-web');
   require('cantina-app-users');
+  require('cantina-validators');
+  require('cantina-email');
   require('../');
 
   app.start();

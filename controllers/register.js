@@ -56,7 +56,10 @@ function createAccountRequest (req, res, next) {
   app.collections.users.find({email: req.body.email, status: 'invited'}, function (err, invitedUser) {
     if (err) return next(err);
     if (invitedUser) {
-      app.email.send('users/account_confirm', {user: invitedUser});
+      app.users.sanitize(invitedUser);
+      app.email.send('users/account_confirm', {user: invitedUser}, function (err) {
+        if (err) app.emit('error', err);
+      });
       res.setMessage([ "Your request has previously been approved by a Member Site administrator.",
         "A follow-up email will be sent to the address you provided for account activation."]
         .join(' '), 'success');

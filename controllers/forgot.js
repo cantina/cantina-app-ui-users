@@ -41,12 +41,13 @@ function processForgot (req, res, next) {
     return next();
   }
 
-  app.collections.users.find(req.body.email.trim(), function (err, user) {
+  app.collections.users.findOne({email_lc: req.body.email.trim()}, function (err, user) {
     if (err) return res.renderError(err);
     if (!user) {
       res.formError('email', 'Email address not found.');
       return next();
     }
+    app.users.sanitize(user);
     app.email.send('users/password_reset',{ user: user }, function (err) {
       if (err) return res.renderError(err);
       res.vars.success = 'Please check your email for further instructions.';
@@ -67,6 +68,7 @@ function loadToken (req, res, next) {
             res.vars.error = 'You may not reset another user\'s password.';
             return next();
           }
+          app.users.sanitize(user);
           res.vars.user = user;
           next();
         }
@@ -101,16 +103,18 @@ function processReset (req, res, next) {
     return next();
   }
 
-  app.users.setPassword(res.vars.user, req.body.pass);
-  app.collections.users.save(res.vars.user, function (err) {
+  app.users.setPassword(res.vars.user, req.body.pass, function (err) {
     if (err) return res.renderError(err);
-    delete res.vars.values;
-    app.tokens.delete(req.params.token, { prefix: 'password-reset' }, function (err) {
+    app.collections.users.save(res.vars.user, function (err) {
       if (err) return res.renderError(err);
-      app.auth.logIn(user, req, res, function (err) {
+      delete res.vars.values;
+      app.tokens.delete(req.params.token, { prefix: 'password-reset' }, function (err) {
         if (err) return res.renderError(err);
-        res.setMessage('Your password has been reset, and you are now logged in.', 'success');
-        res.redirect('/');
+        app.auth.logIn(user, req, res, function (err) {
+          if (err) return res.renderError(err);
+          res.setMessage('Your password has been reset, and you are now logged in.', 'success');
+          res.redirect('/');
+        });
       });
     });
   });

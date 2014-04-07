@@ -37,28 +37,15 @@ function processLogin (req, res, next) {
     return next();
   }
 
-  app.collections.users.find({email: req.body.email.trim()}, function (err, user) {
-    if (err) return res.renderError(err);
-    if (user) {
-      if (app.users.checkPassword(req.body.pass, user._values.auth)){
-        app.auth.logIn(user, req, res, function (err) {
-          if (err) return res.renderError(err);
-          var redirectUrl = req.session.redirectUrl || '/';
-          // Clean-up the session, if necessary
-          req.session.redirectUrl && delete req.session.redirectUrl;
-          res.redirect(redirectUrl);
-        });
-      }
-      else {
-        res.formError('login', 'Invalid email/password combination.');
-        next();
-      }
+  app.users.authenticate(req.body.email.trim(), req.body.pass, req, res, function (err) {
+    if (err) {
+      res.formError('login', err.message);
+      return next();
     }
-    else {
-      // invalid credentials
-      res.formError('email', 'The email address was not found.');
-      next();
-    }
+    var redirectUrl = req.session.redirectUrl || '/';
+    // Clean-up the session, if necessary
+    req.session.redirectUrl && delete req.session.redirectUrl;
+    res.redirect(redirectUrl);
   });
 }
 

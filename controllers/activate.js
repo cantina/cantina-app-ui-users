@@ -36,8 +36,9 @@ function loadToken (req, res, next) {
             res.vars.error = 'You are already logged in with a different account. Please log out, re-send the activation email, and try again.';
             return next();
           }
+          app.users.sanitize(user);
           res.vars.user = user;
-          res.vars.values = _.extend({}, user.toJSON({ safe: true }), res.vars.values);
+          res.vars.values = _.extend({}, user, res.vars.values);
           next();
         }
         else {
@@ -77,21 +78,23 @@ function processCompletion (req, res, next) {
     return next();
   }
   user.status = 'active';
-  app.users.setPassword(user, req.body.pass);
-  app.collections.users.save(user, function (err) {
-    if (err && err.code === 'ER_DUP_ENTRY') {
-      if (err.message.match(/for key 'username'$/)){
-        res.formError('username', 'Username already registered.');
+  app.users.setPassword(user, req.body.pass, function (err) {
+    if (err) return res.renderError(err);
+    app.collections.users.save(user, function (err) {
+      if (err && err.code === 'ER_DUP_ENTRY') {
+        if (err.message.match(/for key 'username'$/)){
+          res.formError('username', 'Username already registered.');
+        }
+        return next();
       }
-      return next();
-    }
-    if (err) return next(err);
-    delete res.vars.values;
-    app.tokens.delete(req.params.token, { prefix: 'account' }, function (err) {
-      app.auth.logIn(user, req, res, function (err) {
-        if (err) return res.renderError(err);
-        res.setMessage('Thank you for completing your registration. Your account is now active.', 'success');
-        res.redirect('/');
+      if (err) return next(err);
+      delete res.vars.values;
+      app.tokens.delete(req.params.token, { prefix: 'account' }, function (err) {
+        app.auth.logIn(user, req, res, function (err) {
+          if (err) return res.renderError(err);
+          res.setMessage('Thank you for completing your registration. Your account is now active.', 'success');
+          res.redirect('/');
+        });
       });
     });
   });

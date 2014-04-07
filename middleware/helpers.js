@@ -1,6 +1,11 @@
 
 module.exports = function (req, res, next) {
 
+  /**
+   * This might be better suited as general
+   * cantina-app-ui stuff rather than user specific
+   */
+
   // Log an error and respond to user with a 500.
   res.renderError = function (err) {
     console.error(err.stack || err);

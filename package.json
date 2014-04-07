@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/cantina/cantina-app-users-ui",
   "dependencies": {
-    "cantina-app-users": "cantina/cantina-app-users#develop"
+    "cantina-app-users": "cantina/cantina-app-users#409cc33d59317b08588d97dc5d90a8b3068615dd",
+    "underscore": "~1.6.0"
   },
   "devDependencies": {
     "cantina": "cantina/cantina#3.x",
@@ -27,7 +28,10 @@
     "cantina-mongo": "cantina/cantina-mongo#master",
     "cantina-auth": "cantina/cantina-auth#3.x",
     "cantina-redis": "cantina/cantina-redis#3.x",
+    "cantina-session": "cantina/cantina-session#3.x",
     "cantina-tokens": "cantina/cantina-tokens#3.x",
+    "cantina-validators": "cantina/cantina-validators#3.x",
+    "cantina-email": "cantina/cantina-email#3.x",
     "mocha": "^1.18.2"
   }
 }
