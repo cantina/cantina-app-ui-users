@@ -67,7 +67,7 @@ function processRequest (req, res, next) {
 }
 
 function createAccountRequest (req, res, next) {
-  app.collections.users.find({email: req.body.email, status: 'invited'}, function (err, invitedUser) {
+  app.collections.users.findOne({email: req.body.email, status: 'invited'}, function (err, invitedUser) {
     if (err) return next(err);
     if (invitedUser) {
       app.users.sanitize(invitedUser);
