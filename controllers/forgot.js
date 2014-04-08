@@ -1,13 +1,27 @@
 var app = require('cantina')
-  , controller = module.exports = app.controller();
+  , controller = module.exports = app.controller()
+  , controllerHooks = require('../lib/controller_hooks');
+
+controllerHooks(controller, {
+  get: ['/forgot', '/forgot/:token'],
+  post: ['/forgot', '/forgot/:token']
+});
 
 require('cantina-tokens');
 
 controller.add('/forgot*', [loggedInCheck, values]);
-controller.get('/forgot', forgot);
-controller.post('/forgot', [processForgot, forgot]);
-controller.get('/forgot/:token', [loadToken, resetForm]);
-controller.post('/forgot/:token', [loadToken, processReset, resetForm]);
+
+app.hook('get:/forgot').add(100, forgot);
+
+app.hook('post:/forgot').add(100, processForgot);
+app.hook('post:/forgot').add(200, forgot);
+
+app.hook('get:/forgot/:token').add(100, loadToken);
+app.hook('get:/forgot/:token').add(200, resetForm);
+
+app.hook('post:/forgot/:token').add(100, loadToken);
+app.hook('post:/forgot/:token').add(200, processReset);
+app.hook('post:/forgot/:token').add(300, resetForm);
 
 function loggedInCheck (req, res, next) {
   if (req.user) {

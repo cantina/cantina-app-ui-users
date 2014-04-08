@@ -1,6 +1,12 @@
 var app = require('cantina')
   , _ = require('underscore')
-  , controller = module.exports = app.controller();
+  , controller = module.exports = app.controller()
+  , controllerHooks = require('../lib/controller_hooks');
+
+controllerHooks(controller, {
+  get: ['/activate/:token'],
+  post: ['/activate/:token', '/activate/resend']
+});
 
 function values (req, res, next) {
   res.vars.values = req.body || {};
@@ -8,13 +14,16 @@ function values (req, res, next) {
 }
 
 controller.add('/activate*', values);
-controller.get('/activate/:token', [loadToken, page]);
-controller.post('/activate/:token', [loadToken, processCompletion, page]);
-controller.post('/activate/resend', resend);
 
-controller.on('error', function (err, req, res) {
-  res.renderError(err);
-});
+app.hook('get:/activate/:token').add(100, loadToken);
+app.hook('get:/activate/:token').add(200, page);
+
+app.hook('post:/activate/:token').add(100, loadToken);
+app.hook('post:/activate/:token').add(200, processCompletion);
+app.hook('post:/activate/:token').add(300, page);
+
+app.hook('post:/activate/resend').add(100, resend);
+
 
 function loadToken (req, res, next) {
   if (req.user) {

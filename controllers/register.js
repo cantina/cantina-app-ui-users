@@ -1,9 +1,23 @@
 var app = require('cantina')
-  , controller = module.exports = app.controller();
+  , controller = module.exports = app.controller()
+  , controllerHooks = require('../lib/controller_hooks');
 
-controller.get('/register', [loggedInRedirect, values, register]);
-controller.post('/register', [loggedInRedirect, values, processRequest, register]);
-controller.get('/registered', [loggedInRedirect, registered]);
+controllerHooks(controller, {
+  get: ['/register', '/registered'],
+  post: ['/register']
+});
+
+app.hook('get:/register').add(100, loggedInRedirect);
+app.hook('get:/register').add(200, values);
+app.hook('get:/register').add(300, register);
+
+app.hook('post:/register').add(100, loggedInRedirect);
+app.hook('post:/register').add(200, values);
+app.hook('post:/register').add(300, processRequest);
+app.hook('post:/register').add(400, register);
+
+app.hook('get:/registered').add(100, loggedInRedirect);
+app.hook('get:/registered').add(200, registered);
 
 
 function loggedInRedirect (req, res, next) {
