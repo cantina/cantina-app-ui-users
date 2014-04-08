@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/cantina/cantina-app-users-ui",
   "dependencies": {
-    "cantina-app-users": "cantina/cantina-app-users#409cc33d59317b08588d97dc5d90a8b3068615dd",
+    "cantina-app-users": "cantina/cantina-app-users#develop",
     "underscore": "~1.6.0"
   },
   "devDependencies": {

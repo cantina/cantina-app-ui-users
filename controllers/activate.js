@@ -4,8 +4,8 @@ var app = require('cantina')
   , controllerHooks = require('../lib/controller_hooks');
 
 controllerHooks(controller, {
-  get: ['/activate/:token'],
-  post: ['/activate/:token', '/activate/resend']
+  get: ['/account-confirm/:token'],
+  post: ['/account-confirm/:token', '/account-confirm/resend']
 });
 
 function values (req, res, next) {
@@ -13,16 +13,16 @@ function values (req, res, next) {
   next();
 }
 
-controller.add('/activate*', values);
+controller.add('/account-confirm*', values);
 
-app.hook('get:/activate/:token').add(100, loadToken);
-app.hook('get:/activate/:token').add(200, page);
+app.hook('get:/account-confirm/:token').add(100, loadToken);
+app.hook('get:/account-confirm/:token').add(200, page);
 
-app.hook('post:/activate/:token').add(100, loadToken);
-app.hook('post:/activate/:token').add(200, processCompletion);
-app.hook('post:/activate/:token').add(300, page);
+app.hook('post:/account-confirm/:token').add(100, loadToken);
+app.hook('post:/account-confirm/:token').add(200, processCompletion);
+app.hook('post:/account-confirm/:token').add(300, page);
 
-app.hook('post:/activate/resend').add(100, resend);
+app.hook('post:/account-confirm/resend').add(100, resend);
 
 
 function loadToken (req, res, next) {
@@ -89,6 +89,8 @@ function processCompletion (req, res, next) {
   user.status = 'active';
   app.users.setPassword(user, req.body.pass, function (err) {
     if (err) return res.renderError(err);
+    var userVars = _.pick(req.body, app.schemas.user.properties);
+    user = _.extend(user, userVars);
     app.collections.users.save(user, function (err) {
       if (err && err.code === 'ER_DUP_ENTRY') {
         if (err.message.match(/for key 'username'$/)){

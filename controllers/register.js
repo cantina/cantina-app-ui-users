@@ -74,18 +74,14 @@ function createAccountRequest (req, res, next) {
       app.email.send('users/account_confirm', {user: invitedUser}, function (err) {
         if (err) app.emit('error', err);
       });
-      res.setMessage([ "Your request has previously been approved by a Member Site administrator.",
-        "A follow-up email will be sent to the address you provided for account activation."]
+      res.setMessage(["A follow-up email will be sent to the address you provided for account activation."]
         .join(' '), 'success');
       res.redirect('/registered');
     }
     else {
-      var user = app.collections.users.create({
-        email: req.body.email,
-        first_name: req.body.firstname,
-        last_name: req.body.lastname,
-        status: 'requested'
-      });
+      var userVars = _.pick(req.body, app.schemas.user.properties);
+      userVars.status  || (userVars.status = 'requested');
+      var user = app.collections.users.create(userVars);
       app.collections.users.save(user, function (err) {
         if (err && err.type !== 'duplicate') {
           return next(err);
@@ -116,5 +112,5 @@ function registered (req, res, next) {
   res.vars.noScripts = true;
   res.vars.noLogin = true;
   res.vars.postRequest = true;
-  res.render('users/login', res.vars);
+  res.render('users/register', res.vars);
 }

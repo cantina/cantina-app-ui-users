@@ -1,0 +1,8 @@
+<div class="form-group {{#if formErrors.organization}} error{{/if}} organization">
+  <input name="organization" type="text" autocomplete="off" id="organization-register" placeholder="Organization" class="form-control" value="{{values.organization}}">
+  {{#if formErrors.organization}}<span class="help-block">{{formErrors.organization}}</span>{{/if}}
+</div>
+<div class="form-group {{#if formErrors.title}} error{{/if}} title">
+  <input name="title" type="text" autocomplete="off" id="title-register" placeholder="Title" class="form-control" value="{{values.title}}">
+  {{#if formErrors.title}}<span class="help-block">{{formErrors.title}}</span>{{/if}}
+</div>
