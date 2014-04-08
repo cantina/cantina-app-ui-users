@@ -1,4 +1,5 @@
 var app = require('cantina')
+  , _ = require('underscore')
   , controller = module.exports = app.controller()
   , controllerHooks = require('../lib/controller_hooks');
 
@@ -79,8 +80,13 @@ function createAccountRequest (req, res, next) {
       res.redirect('/registered');
     }
     else {
-      var userVars = _.pick(req.body, app.schemas.user.properties);
-      userVars.status  || (userVars.status = 'requested');
+      var userVars = _.pick(req.body, Object.keys(app.schemas.user.properties));
+      userVars.status  || (userVars.status = 'disabled');
+      userVars.name = {
+        first: req.body.first_name,
+        last: req.body.last_name
+      };
+      userVars.username || (userVars.username = userVars.name.first + userVars.name.last);
       var user = app.collections.users.create(userVars);
       app.collections.users.save(user, function (err) {
         if (err && err.type !== 'duplicate') {
