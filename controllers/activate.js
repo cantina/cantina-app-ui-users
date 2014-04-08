@@ -31,7 +31,7 @@ function loadToken (req, res, next) {
     return next();
   }
 
-  app.tokens.check(req.params.token, { prefix: 'account' }, function (err, userId) {
+  app.tokens.check(req.params.token, 'account', function (err, userId) {
     if (err) return next(err);
     if (userId) {
       app.collections.users.load(userId, function (err, user) {
@@ -100,7 +100,7 @@ function processCompletion (req, res, next) {
       }
       if (err) return next(err);
       delete res.vars.values;
-      app.tokens.delete(req.params.token, { prefix: 'account' }, function (err) {
+      app.tokens.delete(req.params.token, 'account', function (err) {
         app.auth.logIn(user, req, res, function (err) {
           if (err) return res.renderError(err);
           res.setMessage('Thank you for completing your registration. Your account is now active.', 'success');
@@ -116,7 +116,6 @@ function page (req, res, next) {
     res.statusCode = 400;
     res.vars.noScripts = true;
     res.vars.message = res.vars.error;
-    return res.render('errors/400', res.vars);
   }
   delete res.vars.user;
   res.vars.title = 'Activate account';
@@ -128,7 +127,7 @@ function resend (req, res, next) {
   if (!req.user) {
     res.statusCode = 401;
     res.vars.noScripts = true;
-    return res.render('errors/401', res.vars);
+    return res.renderStatus(401, res.vars);
   }
   app.email.send('users/account_confirm', { user: req.user }, function (err) {
     if (err) {

@@ -72,7 +72,7 @@ function processForgot (req, res, next) {
 
 function loadToken (req, res, next) {
   if (res.vars.error) return next();
-  app.tokens.check(req.params.token, { prefix: 'password-reset' }, function (err, userId) {
+  app.tokens.check(req.params.token, 'password-reset', function (err, userId) {
     if (err) return res.renderError(err);
     if (userId) {
       app.collections.users.load(userId, function (err, user) {
@@ -122,7 +122,7 @@ function processReset (req, res, next) {
     app.collections.users.save(res.vars.user, function (err) {
       if (err) return res.renderError(err);
       delete res.vars.values;
-      app.tokens.delete(req.params.token, { prefix: 'password-reset' }, function (err) {
+      app.tokens.delete(req.params.token, 'password-reset', function (err) {
         if (err) return res.renderError(err);
         app.auth.logIn(user, req, res, function (err) {
           if (err) return res.renderError(err);
