@@ -1,11 +1,11 @@
 {{#unless postRequest}}
   <h3>Register</h3>
   <form class="register account" action="/register" method="POST">
-    <div class="form-group row{{#if formErrors.email}} error{{/if}} email">
+    <div class="form-group {{#if formErrors.email}} error{{/if}} email">
       <input name="email" type="text" autocomplete="off" id="email-register" placeholder="Email Address" class="form-control" value="{{#unless loginErrors}}{{values.email}}{{/unless}}">
       {{#if formErrors.email}}<span class="help-block">{{formErrors.email}}</span>{{/if}}
     </div>
-    <div class="row">
+    <div class="controls">
       <div class="form-group {{#if formErrors.firstname}} error{{/if}} firstname">
         <input name="firstname" type="text" autocomplete="off" id="firstname-register" placeholder="First Name" class="form-control" value="{{values.firstname}}">
         {{#if formErrors.firstname}}<span class="help-block">{{formErrors.firstname}}</span>{{/if}}
@@ -14,8 +14,9 @@
         <input name="lastname" type="text" autocomplete="off" id="lastname-register" placeholder="Last Name" class="form-control" value="{{values.lastname}}">
         {{#if formErrors.lastname}}<span class="help-block">{{formErrors.lastname}}</span>{{/if}}
       </div>
+      {{> users/partials/extraFields}}
     </div>
-    <div class="row">
+    <div class="controls">
       <input type="submit" class="btn btn-primary request-account-button pull-right" value="Request Account">
     </div>
   </form>
