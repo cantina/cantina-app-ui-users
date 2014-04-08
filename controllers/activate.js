@@ -68,14 +68,16 @@ function processCompletion (req, res, next) {
   var user = res.vars.user;
   delete res.vars.user;
 
+  var minPasswordLen = app.conf.get('users-ui:password_min_length') || 5;
+
   if (!req.body) {
     return next(new Error('Invalid post data'));
   }
   if (!req.body.pass) {
     res.formError('pass', 'Password is required.');
   }
-  else if (req.body.pass.length < 5) {
-    res.formError('pass', 'Password must be at least 5 characters long.');
+  else if (req.body.pass.length < minPasswordLen) {
+    res.formError('pass', 'Password must be at least ' + minPasswordLen + ' characters long.');
   }
   else if (!req.body.pass2) {
     res.formError('pass2', 'Password confirmation required.');
