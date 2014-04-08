@@ -11,7 +11,7 @@
       <form id="forgot" method="post">
         <div class="form-group{{#if formErrors.email}} error{{/if}} email">
           <div class="controls">
-            <input name="email" type="text" id="email" class="col-lg-12" value="{{values.email}}" placeholder="Enter Your Email Address...">
+            <input name="email" type="text" id="email" class="form-control" value="{{values.email}}" placeholder="Enter Your Email Address...">
             {{#if formErrors.email}} <span class="help-inline">{{formErrors.email}}</span>{{/if}}
           </div>
         </div>

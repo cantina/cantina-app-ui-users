@@ -4,20 +4,20 @@
     <p class="instructions">
       Please enter a new password below to access your Member Site account.
     </p>
-    <form id="forgot" method="post">
-      <div class="control-group{{#if formErrors.pass}} error{{/if}} pass">
+    <form id="forgot" method="post" class="form">
+      <div class="form-group{{#if formErrors.pass}} error{{/if}} pass">
         <div class="controls">
-          <input name="pass" type="password" class="input-block-level" placeholder="New Password">
+          <input name="pass" type="password" class="col-lg-12" placeholder="New Password">
           {{#if formErrors.pass}} <span class="help-inline">{{formErrors.pass}}</span>{{/if}}
         </div>
       </div>
-      <div class="control-group{{#if formErrors.pass2}} error{{/if}} pass2">
+      <div class="form-group{{#if formErrors.pass2}} error{{/if}} pass2">
         <div class="controls">
-          <input name="pass2" type="password" class="input-block-level" placeholder="Re-enter New password">
+          <input name="pass2" type="password" class="col-lg-12" placeholder="Re-enter New password">
           {{#if formErrors.pass2}} <span class="help-inline">{{formErrors.pass2}}</span>{{/if}}
         </div>
       </div>
-      <div class="control-group submit">
+      <div class="form-group submit">
         <div class="controls clearfix">
           <input type="submit" class="btn btn-primary pull-right log-in-button" value="Reset Password">
         </div>
