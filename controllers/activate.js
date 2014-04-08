@@ -89,15 +89,18 @@ function processCompletion (req, res, next) {
   user.status = 'active';
   app.users.setPassword(user, req.body.pass, function (err) {
     if (err) return res.renderError(err);
-    var userVars = _.pick(req.body, app.schemas.user.properties);
+    var userVars = _.pick(req.body, Object.keys(app.schemas.user.properties));
     user = _.extend(user, userVars);
     app.collections.users.save(user, function (err) {
+
+      //todo - db agnostic error handling
       if (err && err.code === 'ER_DUP_ENTRY') {
         if (err.message.match(/for key 'username'$/)){
           res.formError('username', 'Username already registered.');
         }
         return next();
       }
+
       if (err) return next(err);
       delete res.vars.values;
       app.tokens.delete(req.params.token, 'account', function (err) {
@@ -116,6 +119,7 @@ function page (req, res, next) {
     res.statusCode = 400;
     res.vars.noScripts = true;
     res.vars.message = res.vars.error;
+    return res.renderStatus(400, res.vars);
   }
   delete res.vars.user;
   res.vars.title = 'Activate account';

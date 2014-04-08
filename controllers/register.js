@@ -100,8 +100,7 @@ function createAccountRequest (req, res, next) {
         // (c) a new account_request was not created because the email matches
         //     an existing user.
         else {
-          res.setMessage([ "Your information was successfully sent to a Member Site administrator for review.",
-            "A follow-up email will be sent to the address you provided pending account approval."]
+          res.setMessage([ "A follow-up email will be sent to the address you provided pending account approval."]
             .join(' '), 'success');
           res.redirect('/registered');
         }

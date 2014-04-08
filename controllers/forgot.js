@@ -62,7 +62,7 @@ function processForgot (req, res, next) {
       return next();
     }
     app.users.sanitize(user);
-    app.email.send('users/password_reset',{ user: user }, function (err) {
+    app.email.send('users/password_reset', { user: user }, function (err) {
       if (err) return res.renderError(err);
       res.vars.success = 'Please check your email for further instructions.';
       next();
