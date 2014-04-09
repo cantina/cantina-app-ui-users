@@ -9,9 +9,8 @@ module.exports = function (req, res, next) {
 
   // Log an error and respond to user with a 500.
   res.renderError = function (err) {
-    console.error(err.stack || err);
+    app.emit('error', err.stack || err);
     res.statusCode = 500;
-    res.vars.noScripts = true;
     res.renderStatus(500, res.vars);
   };
 
