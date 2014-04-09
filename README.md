@@ -3,47 +3,14 @@ cantina-app-users-ui
 
 Drop-in UI for cantina-app-users
 
-Provides
---------
-
-###Login
-
-- **route:** `/login`
-- **template** `users/login`
-
-###Logout
-
-- **route:** `/logout`
-- **template:** *none*
-
-###Password Reset Request
-
-- **route:** `/forgot`
-- **template:** `users/forgot`
-
-###Password Reset Form
-
-- **route:** `/forgot/:token`
-- **template:** `users/forgot-reset`
-
-###Register
-
-- **route:** `/register`, `/registered`
-- **template:** `users/register`
-
-###Activate
-
-- **route:** `/activate/:token`, `/activate/resend`
-- **template:** `users/activate`
-
 Usage
 ------
 Just include cantina-app-users-ui in your main app file and start using the
 default UI.
 
 You can optionally extend the UI implementation by adding your own templates
-to override the above, adding form field partials, and adding controller hooks
-to change the default behavior
+to override the above, adding form field partials, and adding hooks
+to change the default controller behavior
 
 Example
 -------
@@ -63,36 +30,25 @@ app.boot(function (err) {
 ```
 
 ```js
-var app = require('cantina')
-  , controller = module.exports = app.controller();
+var app = require('cantina');
 
-app.hook('get:/register').add(250, templateVars);
-app.hook('post:/register').add(250, validate);
-app.hook('post:/register').add(350, templateVars);
-
-function templateVars (req, res, next) {
-  res.vars.formFields || (res.vars.formFields = []);
-  res.vars.formFields.push({
+app.hook('controller:before:render:users/register').add(function (req, res, context, options, next) {
+  context.formFields || (context.formFields = []);
+  context.formFields.push({
     template: 'partials/registerFields'
   });
-  next && next();
-}
+  next();
+});
 
-function validate (req, res, next) {
+app.hook('controller:form:validate:register').add(function (req, res, next) {
   if (!res.vars.values.organization) {
     res.formError('organization', 'Organization is required.');
   }
   if (!res.vars.values.title) {
     res.formError('title', 'Title is required.');
   }
-  if (res.formErrors) {
-    res.vars.noScripts = true;
-    res.vars.loginErrors = true;
-    templateVars(req, res);
-    return res.render('users/register', res.vars);
-  }
   next();
-}
+});
 ```
 
 ```hbs
@@ -105,3 +61,58 @@ function validate (req, res, next) {
   {{#if formErrors.title}}<span class="help-block">{{formErrors.title}}</span>{{/if}}
 </div>
 ```
+
+Provides
+--------
+
+###Hooks
+
+####`controller:before:render:[template](res, res, context, options)`
+
+Runs before a template gets rendered. Allows app or plugins to hook in and
+modify vars or prevent the render.
+
+####`controller:form:validate:[endpoint](req, res)`
+
+Runs at the time of form validation for each controller. Allows app or plugins
+to hook in and add own validation to submitted form.
+
+###Endpoints
+
+####Login
+
+- **route:** `/login`
+- **template** `users/login`
+
+####Logout
+
+- **route:** `/logout`
+- **template:** *none*
+
+####Password Reset Request
+
+- **route:** `/forgot`
+- **template:** `users/forgot`
+
+####Password Reset Form
+
+- **route:** `/forgot/:token`
+- **template:** `users/forgot-reset`
+
+####Register
+
+- **route:** `/register`, `/registered`
+- **template:** `users/register`
+
+####Activate
+
+- **route:** `/account-confirm/:token`, `/account-confirm/resend`
+- **template:** `users/account_confirm`
+
+###Partials
+
+#### `users/partials/extraFields`
+
+Applies an additional partial to each of the above forms, allowing the app or
+plugin to extend forms. Just include an array of template paths on
+`res.formFields` and they will be appended to the default forms.
