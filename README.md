@@ -33,7 +33,7 @@ var app = require('cantina');
 app.hook('controller:before:render:users/register').add(function (req, res, context, options, next) {
   context.formFields || (context.formFields = []);
   context.formFields.push({
-    template: 'partials/registerFields'
+    template: 'partials/users/registerFields'
   });
   next();
 });
