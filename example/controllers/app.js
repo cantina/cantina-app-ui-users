@@ -8,7 +8,7 @@ controller.get(['/'], function index (req, res, next) {
   res.render('home', res.vars);
 });
 
-app.hook('controller:before:render:users/register').add(function (req, res, context, options, next) {
+app.hook('views:before:render:users/register').add(function (req, res, context, options, next) {
   context.formFields || (context.formFields = []);
   context.formFields.push({
     template: 'partials/users/registerFields'
@@ -28,7 +28,7 @@ app.hook('controller:form:validate:register').add(function (req, res, next) {
   next();
 });
 
-app.hook('controller:before:render:users/login').add(function (req, res, context, options, next) {
+app.hook('views:before:render:users/login').add(function (req, res, context, options, next) {
   res.render('users/login_alt', context, options);
 });
 
