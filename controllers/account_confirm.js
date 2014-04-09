@@ -121,7 +121,7 @@ function page (req, res, next) {
   delete res.vars.user;
   res.vars.title = 'Activate account';
   res.vars.noScripts = true;
-  res.render('users/activate', res.vars);
+  res.render('users/account_confirm', res.vars);
 }
 
 function resend (req, res, next) {
