@@ -13,6 +13,8 @@ app.hook('controller:before:render:users/register').add(function (req, res, cont
   context.formFields.push({
     template: 'partials/registerFields'
   });
+  context.values || (context.values = {});
+  context.values.organization = "Default Org Name";
   next();
 });
 
@@ -24,4 +26,13 @@ app.hook('controller:form:validate:register').add(function (req, res, next) {
     res.formError('title', 'Title is required.');
   }
   next();
+});
+
+app.hook('controller:before:render:users/login').add(function (req, res, context, options, next) {
+  res.render('users/login_alt', context, options);
+});
+
+app.middleware.remove('/logout');
+controller.get('/logout', function (req, res, next) {
+  res.render('stuck', res.vars);
 });

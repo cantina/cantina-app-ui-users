@@ -9,5 +9,15 @@ app.boot(function (err) {
   require('cantina-email');
   require('../');
 
+  // Error handler.
+  app.on('error', function (err) {
+    if (err.stack) {
+      app.log.error(err.stack);
+    }
+    else {
+      app.log.error(err);
+    }
+  });
+
   app.start();
 });
