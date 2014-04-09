@@ -7,30 +7,21 @@ controller.get(['/'], function index (req, res, next) {
   }
   res.render('home', res.vars);
 });
-app.hook('get:/register').add(250, templateVars);
-app.hook('post:/register').add(250, validate);
-app.hook('post:/register').add(350, templateVars);
 
-function templateVars (req, res, next) {
-  res.vars.formFields || (res.vars.formFields = []);
-  res.vars.formFields.push({
+app.hook('controller:before:render:users/register').add(function (req, res, context, options, next) {
+  context.formFields || (context.formFields = []);
+  context.formFields.push({
     template: 'partials/registerFields'
   });
-  next && next();
-}
+  next();
+});
 
-function validate (req, res, next) {
+app.hook('controller:form:validate:register').add(function (req, res, next) {
   if (!res.vars.values.organization) {
     res.formError('organization', 'Organization is required.');
   }
   if (!res.vars.values.title) {
     res.formError('title', 'Title is required.');
   }
-  if (res.formErrors) {
-    res.vars.noScripts = true;
-    res.vars.loginErrors = true;
-    templateVars(req, res);
-    return res.render('users/register', res.vars);
-  }
   next();
-}
+});

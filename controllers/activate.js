@@ -1,12 +1,6 @@
 var app = require('cantina')
   , _ = require('underscore')
-  , controller = module.exports = app.controller()
-  , controllerHooks = require('../lib/controller_hooks');
-
-controllerHooks(controller, {
-  get: ['/account-confirm/:token'],
-  post: ['/account-confirm/:token', '/account-confirm/resend']
-});
+  , controller = module.exports = app.controller();
 
 function values (req, res, next) {
   res.vars.values = req.body || {};
@@ -14,16 +8,13 @@ function values (req, res, next) {
 }
 
 controller.add('/account-confirm*', values);
+controller.get('/account-confirm/:token', [loadToken, page]);
+controller.post('/account-confirm/:token', [loadToken, processCompletion, page]);
+controller.post('/account-confirm/resend', resend);
 
-app.hook('get:/account-confirm/:token').add(100, loadToken);
-app.hook('get:/account-confirm/:token').add(200, page);
-
-app.hook('post:/account-confirm/:token').add(100, loadToken);
-app.hook('post:/account-confirm/:token').add(200, processCompletion);
-app.hook('post:/account-confirm/:token').add(300, page);
-
-app.hook('post:/account-confirm/resend').add(100, resend);
-
+controller.on('error', function (err, req, res) {
+  res.renderError(err);
+});
 
 function loadToken (req, res, next) {
   if (req.user) {
@@ -85,31 +76,35 @@ function processCompletion (req, res, next) {
   else if (req.body.pass !== req.body.pass2) {
     res.formError('pass2', 'Password confirmation was not entered correctly.');
   }
-  if (res.formErrors) {
-    return next();
-  }
-  user.status = 'active';
-  app.users.setPassword(user, req.body.pass, function (err) {
+
+  app.hook('controller:form:validate:account-confirm').runSeries(req, res, function (err) {
     if (err) return res.renderError(err);
-    var userVars = _.pick(req.body, Object.keys(app.schemas.user.properties));
-    user = _.extend(user, userVars);
-    app.collections.users.save(user, function (err) {
+    if (res.formErrors) {
+      return next();
+    }
+    user.status = 'active';
+    app.users.setPassword(user, req.body.pass, function (err) {
+      if (err) return res.renderError(err);
+      var userVars = _.pick(req.body, Object.keys(app.schemas.user.properties));
+      user = _.extend(user, userVars);
+      app.collections.users.save(user, function (err) {
 
-      //todo - db agnostic error handling
-      if (err && err.code === 'ER_DUP_ENTRY') {
-        if (err.message.match(/for key 'username'$/)){
-          res.formError('username', 'Username already registered.');
+        //todo - db agnostic error handling
+        if (err && err.code === 'ER_DUP_ENTRY') {
+          if (err.message.match(/for key 'username'$/)){
+            res.formError('username', 'Username already registered.');
+          }
+          return next();
         }
-        return next();
-      }
 
-      if (err) return next(err);
-      delete res.vars.values;
-      app.tokens.delete(req.params.token, 'account', function (err) {
-        app.auth.logIn(user, req, res, function (err) {
-          if (err) return res.renderError(err);
-          res.setMessage('Thank you for completing your registration. Your account is now active.', 'success');
-          res.redirect('/');
+        if (err) return next(err);
+        delete res.vars.values;
+        app.tokens.delete(req.params.token, 'account', function (err) {
+          app.auth.logIn(user, req, res, function (err) {
+            if (err) return res.renderError(err);
+            res.setMessage('Thank you for completing your registration. Your account is now active.', 'success');
+            res.redirect('/');
+          });
         });
       });
     });

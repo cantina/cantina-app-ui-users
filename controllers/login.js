@@ -1,20 +1,8 @@
 var app = require('cantina')
-  , controller = module.exports = app.controller()
-  , controllerHooks = require('../lib/controller_hooks');
+  , controller = module.exports = app.controller();
 
-controllerHooks(controller, {
-  get: ['/login'],
-  post: ['/login']
-});
-
-app.hook('get:/login').add(100, loggedInRedirect);
-app.hook('get:/login').add(200, values);
-app.hook('get:/login').add(300, login);
-
-app.hook('post:/login').add(100, loggedInRedirect);
-app.hook('post:/login').add(200, values);
-app.hook('post:/login').add(300, processLogin);
-app.hook('post:/login').add(400, login);
+controller.get('/login', [loggedInRedirect, values, login]);
+controller.post('/login', [loggedInRedirect, values, processLogin, login]);
 
 function loggedInRedirect (req, res, next) {
   if (req.user) {
@@ -45,19 +33,23 @@ function processLogin (req, res, next) {
   if (!req.body.email || !req.body.pass) {
     res.formError('login', 'Email and password are both required.');
   }
-  if (res.formErrors) {
-    return next();
-  }
 
-  app.users.authenticate(req.body.email.trim(), req.body.pass, req, res, function (err) {
-    if (err) {
-      res.formError('login', err.message);
+  app.hook('controller:form:validate:login').runSeries(req, res, function (err) {
+    if (err) return res.renderError(err);
+    if (res.formErrors) {
       return next();
     }
-    var redirectUrl = req.session.redirectUrl || '/';
-    // Clean-up the session, if necessary
-    req.session.redirectUrl && delete req.session.redirectUrl;
-    res.redirect(redirectUrl);
+
+    app.users.authenticate(req.body.email.trim(), req.body.pass, req, res, function (err) {
+      if (err) {
+        res.formError('login', err.message);
+        return next();
+      }
+      var redirectUrl = req.session.redirectUrl || '/';
+      // Clean-up the session, if necessary
+      req.session.redirectUrl && delete req.session.redirectUrl;
+      res.redirect(redirectUrl);
+    });
   });
 }
 

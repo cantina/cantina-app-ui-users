@@ -1,27 +1,13 @@
 var app = require('cantina')
-  , controller = module.exports = app.controller()
-  , controllerHooks = require('../lib/controller_hooks');
-
-controllerHooks(controller, {
-  get: ['/forgot', '/forgot/:token'],
-  post: ['/forgot', '/forgot/:token']
-});
+  , controller = module.exports = app.controller();
 
 require('cantina-tokens');
 
 controller.add('/forgot*', [loggedInCheck, values]);
-
-app.hook('get:/forgot').add(100, forgot);
-
-app.hook('post:/forgot').add(100, processForgot);
-app.hook('post:/forgot').add(200, forgot);
-
-app.hook('get:/forgot/:token').add(100, loadToken);
-app.hook('get:/forgot/:token').add(200, resetForm);
-
-app.hook('post:/forgot/:token').add(100, loadToken);
-app.hook('post:/forgot/:token').add(200, processReset);
-app.hook('post:/forgot/:token').add(300, resetForm);
+controller.get('/forgot', forgot);
+controller.post('/forgot', [processForgot, forgot]);
+controller.get('/forgot/:token', [loadToken, resetForm]);
+controller.post('/forgot/:token', [loadToken, processReset, resetForm]);
 
 function loggedInCheck (req, res, next) {
   if (req.user) {
@@ -54,18 +40,21 @@ function processForgot (req, res, next) {
     res.formError('email', 'Please enter your email address.');
     return next();
   }
-
-  app.collections.users.findOne({email_lc: req.body.email.trim()}, function (err, user) {
+  app.hook('controller:form:validate:forgot').runSeries(req, res, function (err) {
     if (err) return res.renderError(err);
-    if (!user) {
-      res.formError('email', 'Email address not found.');
-      return next();
-    }
-    app.users.sanitize(user);
-    app.email.send('users/password_reset', { user: user }, function (err) {
+
+    app.collections.users.findOne({email_lc: req.body.email.trim()}, function (err, user) {
       if (err) return res.renderError(err);
-      res.vars.success = 'Please check your email for further instructions.';
-      next();
+      if (!user) {
+        res.formError('email', 'Email address not found.');
+        return next();
+      }
+      app.users.sanitize(user);
+      app.email.send('users/password_reset', { user: user }, function (err) {
+        if (err) return res.renderError(err);
+        res.vars.success = 'Please check your email for further instructions.';
+        next();
+      });
     });
   });
 }
@@ -113,21 +102,25 @@ function processReset (req, res, next) {
   else if (req.body.pass !== req.body.pass2) {
     res.formError('pass2', 'Password confirmation was not entered correctly.');
   }
-  if (res.formErrors) {
-    return next();
-  }
 
-  app.users.setPassword(res.vars.user, req.body.pass, function (err) {
+  app.hook('controller:form:validate:forgot-reset').runSeries(req, res, function (err) {
     if (err) return res.renderError(err);
-    app.collections.users.save(res.vars.user, function (err) {
+    if (res.formErrors) {
+      return next();
+    }
+
+    app.users.setPassword(res.vars.user, req.body.pass, function (err) {
       if (err) return res.renderError(err);
-      delete res.vars.values;
-      app.tokens.delete(req.params.token, 'password-reset', function (err) {
+      app.collections.users.save(res.vars.user, function (err) {
         if (err) return res.renderError(err);
-        app.auth.logIn(user, req, res, function (err) {
+        delete res.vars.values;
+        app.tokens.delete(req.params.token, 'password-reset', function (err) {
           if (err) return res.renderError(err);
-          res.setMessage('Your password has been reset, and you are now logged in.', 'success');
-          res.redirect('/');
+          app.auth.logIn(user, req, res, function (err) {
+            if (err) return res.renderError(err);
+            res.setMessage('Your password has been reset, and you are now logged in.', 'success');
+            res.redirect('/');
+          });
         });
       });
     });

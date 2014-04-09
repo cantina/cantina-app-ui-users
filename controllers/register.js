@@ -1,24 +1,10 @@
 var app = require('cantina')
   , _ = require('underscore')
-  , controller = module.exports = app.controller()
-  , controllerHooks = require('../lib/controller_hooks');
+  , controller = module.exports = app.controller();
 
-controllerHooks(controller, {
-  get: ['/register', '/registered'],
-  post: ['/register']
-});
-
-app.hook('get:/register').add(100, loggedInRedirect);
-app.hook('get:/register').add(200, values);
-app.hook('get:/register').add(300, register);
-
-app.hook('post:/register').add(100, loggedInRedirect);
-app.hook('post:/register').add(200, values);
-app.hook('post:/register').add(300, processRequest);
-app.hook('post:/register').add(400, register);
-
-app.hook('get:/registered').add(100, loggedInRedirect);
-app.hook('get:/registered').add(200, registered);
+controller.get('/register', [loggedInRedirect, values, register]);
+controller.post('/register', [loggedInRedirect, values, processRequest, register]);
+controller.get('/registered', [loggedInRedirect, registered]);
 
 
 function loggedInRedirect (req, res, next) {
@@ -59,12 +45,15 @@ function processRequest (req, res, next) {
   if (!req.body.lastname) {
     res.formError('lastname', 'Last Name is required.');
   }
-  if (res.formErrors) {
-    res.vars.noLogin = true;
-    res.vars.title = 'Request an Account';
-    return next();
-  }
-  createAccountRequest(req, res, next);
+  app.hook('controller:form:validate:register').runSeries(req, res, function (err) {
+    if (err) return res.renderError(err);
+    if (res.formErrors) {
+      res.vars.noLogin = true;
+      res.vars.title = 'Request an Account';
+      return next();
+    }
+    createAccountRequest(req, res, next);
+  });
 }
 
 function createAccountRequest (req, res, next) {
