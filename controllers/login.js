@@ -1,7 +1,8 @@
 var app = require('cantina')
-  , controller = module.exports = app.controller();
+  , controller = module.exports = app.controller()
+  , loginPath = app.conf.get('auth:loginPath') || '/login';
 
-controller.get('/login', [loggedInRedirect, values, login]);
+controller.get(loginPath, [loggedInRedirect, values, login]);
 controller.post('/login', [loggedInRedirect, values, processLogin, login]);
 
 function loggedInRedirect (req, res, next) {

@@ -1,6 +1,7 @@
 var app = require('cantina')
   , _ = require('underscore')
-  , controller = module.exports = app.controller();
+  , controller = module.exports = app.controller()
+  , registerRedirectPath = app.conf.get('users-ui:registerRedirect') || '/registered';
 
 require('cantina-email');
 
@@ -68,7 +69,7 @@ function createAccountRequest (req, res, next) {
       });
       res.setMessage(["A follow-up email will be sent to the address you provided for account activation."]
         .join(' '), 'success');
-      res.redirect('/registered');
+      res.redirect(registerRedirectPath);
     }
     else {
       var userVars = _.pick(req.body, Object.keys(app.schemas.user.properties));
@@ -93,7 +94,7 @@ function createAccountRequest (req, res, next) {
         if (user.status === 'requested') {
           res.setMessage([ "A follow-up email will be sent to the address you provided pending account approval."]
             .join(' '), 'success');
-          res.redirect('/registered');
+          res.redirect(registerRedirectPath);
         }
         else {
           app.users.sanitize(user);
@@ -102,7 +103,7 @@ function createAccountRequest (req, res, next) {
           });
           res.setMessage(["A follow-up email will be sent to the address you provided for account activation."]
             .join(' '), 'success');
-          res.redirect('/registered');
+          res.redirect(registerRedirectPath);
         }
       });
     }
