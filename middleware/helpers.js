@@ -38,15 +38,9 @@ module.exports = function (req, res, next) {
 
   var _render = res.render;
   res.render = function (template, context, options) {
-    var ended = false;
-    res.on('end', function () {
-      ended = true;
-    });
     app.hook('controller:before:render:' + template).runSeries(req, res, context, options, function (err) {
       if (err) return app.emit('error', err);
-      if (!ended) {
-        _render(template, context, options);
-      }
+      _render(template, context, options);
     });
   };
   next();
