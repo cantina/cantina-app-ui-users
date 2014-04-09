@@ -11,7 +11,7 @@ controller.get(['/'], function index (req, res, next) {
 app.hook('controller:before:render:users/register').add(function (req, res, context, options, next) {
   context.formFields || (context.formFields = []);
   context.formFields.push({
-    template: 'partials/registerFields'
+    template: 'partials/users/registerFields'
   });
   context.values || (context.values = {});
   context.values.organization = "Default Org Name";
