@@ -2,6 +2,9 @@ var app = require('cantina')
   , _ = require('underscore')
   , controller = module.exports = app.controller();
 
+require('cantina-tokens');
+require('cantina-email');
+
 function values (req, res, next) {
   res.vars.values = req.body || {};
   next();

@@ -22,8 +22,6 @@ app.boot(function (err) {
 
   require('cantina-web');
   require('cantina-app-users-ui');
-  require('cantina-validators');
-  require('cantina-email');
 
   app.start();
 });

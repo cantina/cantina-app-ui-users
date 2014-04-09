@@ -2,6 +2,8 @@ var app = require('cantina')
   , _ = require('underscore')
   , controller = module.exports = app.controller();
 
+require('cantina-email');
+
 controller.get('/register', [loggedInRedirect, values, register]);
 controller.post('/register', [loggedInRedirect, values, processRequest, register]);
 controller.get('/registered', [loggedInRedirect, registered]);

@@ -2,6 +2,7 @@ var app = require('cantina')
   , controller = module.exports = app.controller();
 
 require('cantina-tokens');
+require('cantina-email');
 
 controller.add('/forgot*', [loggedInCheck, values]);
 controller.get('/forgot', forgot);
