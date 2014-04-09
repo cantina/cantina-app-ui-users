@@ -92,7 +92,7 @@ function process (req, res, next) {
       user = _.extend(user, userVars);
       app.collections.users.save(user, function (err) {
 
-        //todo - db agnostic error handling
+        // TODO: - db agnostic error handling
         if (err && err.code === 'ER_DUP_ENTRY') {
           if (err.message.match(/for key 'username'$/)){
             res.formError('username', 'Username already registered.');
