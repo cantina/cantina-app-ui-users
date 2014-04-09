@@ -103,6 +103,7 @@ function process (req, res, next) {
         if (err) return next(err);
         delete res.vars.values;
         app.tokens.delete(req.params.token, 'account', function (err) {
+          if (err) return res.renderError(err);
           app.auth.logIn(user, req, res, function (err) {
             if (err) return res.renderError(err);
             res.setMessage('Thank you for completing your registration. Your account is now active.', 'success');
