@@ -12,7 +12,7 @@ function values (req, res, next) {
 
 controller.add('/account-confirm*', values);
 controller.get('/account-confirm/:token', [loadToken, page]);
-controller.post('/account-confirm/:token', [loadToken, processCompletion, page]);
+controller.post('/account-confirm/:token', [loadToken, process, page]);
 controller.post('/account-confirm/resend', resend);
 
 controller.on('error', function (err, req, res) {
@@ -57,7 +57,7 @@ function loadToken (req, res, next) {
   });
 }
 
-function processCompletion (req, res, next) {
+function process (req, res, next) {
 
   var user = res.vars.user;
   delete res.vars.user;
