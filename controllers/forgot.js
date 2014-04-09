@@ -90,11 +90,12 @@ function loadToken (req, res, next) {
 
 function processReset (req, res, next) {
   if (res.vars.error) return next();
+  var minPasswordLen = app.conf.get('users-ui:password_min_length') || 5;
   if (!req.body.pass) {
     res.formError('pass', 'Password is required.');
   }
-  else if (req.body.pass.length < 5) {
-    res.formError('pass', 'Password must be at least 5 characters long.');
+  else if (req.body.pass.length < minPasswordLen) {
+    res.formError('pass', 'Password must be at least ' + minPasswordLen + ' characters long.');
   }
   else if (!req.body.pass2) {
     res.formError('pass2', 'Password confirmation required.');
@@ -116,7 +117,7 @@ function processReset (req, res, next) {
         delete res.vars.values;
         app.tokens.delete(req.params.token, 'password-reset', function (err) {
           if (err) return res.renderError(err);
-          app.auth.logIn(user, req, res, function (err) {
+          app.auth.logIn(res.vars.user, req, res, function (err) {
             if (err) return res.renderError(err);
             res.setMessage('Your password has been reset, and you are now logged in.', 'success');
             res.redirect('/');

@@ -70,26 +70,35 @@ function createAccountRequest (req, res, next) {
     }
     else {
       var userVars = _.pick(req.body, Object.keys(app.schemas.user.properties));
-      userVars.status  || (userVars.status = 'disabled');
+      if (app.conf.get('users-ui:require_account_approval')) {
+        userVars.status  || (userVars.status = 'requested');
+      }
+      else {
+        userVars.status || (userVars.status = 'unconfirmed');
+      }
       userVars.name = {
-        first: req.body.first_name,
-        last: req.body.last_name
+        first: req.body.firstname,
+        last: req.body.lastname
       };
       userVars.username || (userVars.username = userVars.name.first + userVars.name.last);
+      userVars.email_lc = userVars.email.toLowerCase();
       var user = app.collections.users.create(userVars);
       app.collections.users.save(user, function (err) {
         if (err && err.type !== 'duplicate') {
           return next(err);
         }
-        // For security reasons, we're not going to be too specific here.
-        // So, the user will get redirected to the "success" page when:
-        // (a) a new account_request was created;
-        // (b) a new account_request was not created because the email matches
-        //     an existing account_request; or
-        // (c) a new account_request was not created because the email matches
-        //     an existing user.
-        else {
+
+        if (user.status === 'requested') {
           res.setMessage([ "A follow-up email will be sent to the address you provided pending account approval."]
+            .join(' '), 'success');
+          res.redirect('/registered');
+        }
+        else {
+          app.users.sanitize(user);
+          app.email.send('users/account_confirm', {user: user}, function (err) {
+            if (err) app.emit('error', err);
+          });
+          res.setMessage(["A follow-up email will be sent to the address you provided for account activation."]
             .join(' '), 'success');
           res.redirect('/registered');
         }
