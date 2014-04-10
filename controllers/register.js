@@ -84,7 +84,6 @@ function createAccountRequest (req, res, next) {
         first: req.body.firstname,
         last: req.body.lastname
       };
-      userVars.username || (userVars.username = userVars.name.first + userVars.name.last);
       var user = app.collections.users.create(userVars);
       app.collections.users.save(user, function (err) {
         if (err && err.type !== 'duplicate') {
