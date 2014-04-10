@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="box-section">
-      <p class="instructions">Welcome! To complete the account registration process and begin adding information to your user profile, please choose a password below.</p>
+      <p class="instructions">{{#if welcomeMessage}}{{{welcomeMessage}}}{{else}}Welcome! To complete the account registration process please choose a password below.{{/if}}</p>
       <form class="complete account" id="activate" method="POST">
         <div class="form-group{{#if formErrors.pass}} error{{/if}} pass">
           <div class="controls">
