@@ -1,8 +1,8 @@
-<ul class="users-list list-unstyled list-group">
+<ul class="users-list list-unstyled list-group" {{#if dataAttributes}}{{{dataAttributes}}}{{/if}}>
   {{#each users}}
     <li class="user clearfix list-group-item">
       {{> users/partials/user}}
     </li>
   {{/each}}
+  {{> users/partials/extraFields}}
 </ul>
-{{> users/partials/extraFields}}
