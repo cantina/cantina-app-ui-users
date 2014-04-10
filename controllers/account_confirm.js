@@ -5,15 +5,30 @@ var app = require('cantina')
 require('cantina-tokens');
 require('cantina-email');
 
+app.conf.add({
+   app: {
+     ui: {
+       users: {
+         passwordMinLength: 5,
+         account_confirm: {
+           route: '/account_confirm',
+           resendRoute: '/account-confirm/resend'
+         }
+       }
+     }
+   }
+});
+var conf = app.conf.get('app:ui:users');
+
 function values (req, res, next) {
   res.vars.values = req.body || {};
   next();
 }
 
-controller.add('/account-confirm*', values);
-controller.get('/account-confirm/:token', [loadToken, page]);
-controller.post('/account-confirm/:token', [loadToken, process, page]);
-controller.post('/account-confirm/resend', resend);
+controller.add(conf.account_confirm.route + '*', values);
+controller.get(conf.account_confirm.route + '/:token', [loadToken, page]);
+controller.post(conf.account_confirm.route + '/:token', [loadToken, process, page]);
+controller.post(conf.account_confirm.resendRoute, resend);
 
 controller.on('error', function (err, req, res) {
   res.renderError(err);
@@ -62,16 +77,14 @@ function process (req, res, next) {
   var user = res.vars.user;
   delete res.vars.user;
 
-  var minPasswordLen = app.conf.get('app-ui-users:password_min_length') || 5;
-
   if (!req.body) {
     return next(new Error('Invalid post data'));
   }
   if (!req.body.pass) {
     res.formError('pass', 'Password is required.');
   }
-  else if (req.body.pass.length < minPasswordLen) {
-    res.formError('pass', 'Password must be at least ' + minPasswordLen + ' characters long.');
+  else if (req.body.pass.length < conf.passwordMinLength) {
+    res.formError('pass', 'Password must be at least ' + conf.passwordMinLength + ' characters long.');
   }
   else if (!req.body.pass2) {
     res.formError('pass2', 'Password confirmation required.');

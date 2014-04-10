@@ -1,13 +1,25 @@
 var app = require('cantina')
   , _ = require('underscore')
   , controller = module.exports = app.controller()
-  , registerRedirectPath = app.conf.get('app-ui-users:registerRedirect') || '/registered';
 
 require('cantina-email');
+app.conf.add({
+  app: {
+    ui: {
+      users: {
+        register: {
+          route: '/register',
+          redirect: '/registered'
+        }
+      }
+    }
+  }
+});
+var conf = app.conf.get('app:ui:users:register');
 
-controller.get('/register', [loggedInRedirect, values, register]);
-controller.post('/register', [loggedInRedirect, values, processRequest, register]);
-controller.get('/registered', [loggedInRedirect, registered]);
+controller.get(conf.route, [loggedInRedirect, values, register]);
+controller.post(conf.route, [loggedInRedirect, values, processRequest, register]);
+controller.get(conf.redirect, [loggedInRedirect, registered]);
 
 
 function loggedInRedirect (req, res, next) {
@@ -70,7 +82,7 @@ function createAccountRequest (req, res, next) {
       });
       res.setMessage(["A follow-up email will be sent to the address you provided for account activation."]
         .join(' '), 'success');
-      res.redirect(registerRedirectPath);
+      res.redirect(conf.redirect);
     }
     else {
       var userVars = _.pick(req.body, Object.keys(app.schemas.user.properties));
@@ -98,7 +110,7 @@ function createAccountRequest (req, res, next) {
         if (user.status === 'requested') {
           res.setMessage([ "A follow-up email will be sent to the address you provided pending account approval."]
             .join(' '), 'success');
-          res.redirect(registerRedirectPath);
+          res.redirect(conf.redirect);
         }
         else {
           app.users.sanitize(user);
@@ -107,7 +119,7 @@ function createAccountRequest (req, res, next) {
           });
           res.setMessage(["A follow-up email will be sent to the address you provided for account activation."]
             .join(' '), 'success');
-          res.redirect(registerRedirectPath);
+          res.redirect(conf.redirect);
         }
       });
     }
