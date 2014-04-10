@@ -1,6 +1,6 @@
 <div class="user-form register-form">
   {{#unless postRequest}}
-    <h3>Register</h3>
+    <h3>{{#if approvalRequired}}Request Account{{else}}Register{{/if}}</h3>
     <form class="register account" action="/register" method="POST">
       <div class="form-group {{#if formErrors.email}} error{{/if}} email">
         <input name="email" type="text" autocomplete="off" id="email-register" placeholder="Email Address" class="form-control" value="{{#unless loginErrors}}{{values.email}}{{/unless}}">
@@ -18,12 +18,18 @@
         {{> users/partials/extraFields}}
       </div>
       <div class="controls">
-        <input type="submit" class="btn btn-primary request-account-button pull-right" value="Request Account">
+        <input type="submit" class="btn btn-primary request-account-button pull-right" {{#if approvalRequired}}value="Request Account"{{else}}value="Register"{{/if}}>
       </div>
     </form>
   {{else}}
     <div class="success">
-      <h2 class="thank-you-header">Thank you for submitting an account request!</h2>
+      <h2 class="thank-you-header">
+        {{#if thankYouMessage}}
+        {{{thankYouMessage}}}
+        {{else}}
+          Thank you for {{#if approvalRequired}}submitting an account request{{else}}registering{{/if}}!
+      {{/if}}
+      </h2>
       <p>
         {{msg}}
       </p>

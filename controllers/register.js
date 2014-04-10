@@ -20,6 +20,7 @@ function loggedInRedirect (req, res, next) {
 function values (req, res, next) {
   res.vars.values = req.body || {};
   res.vars.query = req.query || {};
+  res.vars.approvalRequired = app.conf.get('users-ui:require_account_approval');
   next();
 }
 
