@@ -16,8 +16,15 @@
       </div>
     </div>
     <div class="box-section">
-      <p class="instructions">{{#if welcomeMessage}}{{{welcomeMessage}}}{{else}}Welcome! To complete the account registration process please choose a password below.{{/if}}</p>
+      <p class="instructions">{{#if welcomeMessage}}{{{welcomeMessage}}}{{else}}Welcome! To complete the account registration process please choose a username and password below.{{/if}}</p>
       <form class="complete account" id="activate" method="POST">
+        <div class="form-group{{#if formErrors.username}} error{{/if}} username">
+          <label class="form-label field-label" for="username">Username</label>
+          <div class="controls">
+            <input name="username" class="form-control" value="{{values.username}}">
+            {{#if formErrors.username}} <span class="help-inline">{{formErrors.username}}</span>{{/if}}
+          </div>
+        </div>
         <div class="form-group{{#if formErrors.pass}} error{{/if}} pass">
           <div class="controls">
             <input name="pass" type="password" class="form-control" placeholder="Password">
