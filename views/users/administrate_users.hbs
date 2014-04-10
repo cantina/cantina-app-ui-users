@@ -1,0 +1,8 @@
+<ul class="users-list list-unstyled list-group">
+  {{#each users}}
+    <li class="user clearfix list-group-item">
+      {{> users/partials/user}}
+    </li>
+  {{/each}}
+</ul>
+{{> users/partials/extraFields}}

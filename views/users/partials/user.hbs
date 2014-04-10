@@ -1,0 +1,27 @@
+<div class="col-sm-3">
+  <div class="name">{{name.full}}</div>
+</div>
+<div class="col-sm-3">
+  <div class="email">{{email}}</div>
+</div>
+<div class="col-sm-3">
+  <div class="status">{{status}}</div>
+</div>
+<div class="col-sm-3">
+  <form method="POST" action="{{postPath}}">
+    <input type="hidden" name="user_id" value="{{id}}">
+    {{#is status equal="active"}}
+        <input type="hidden" name="status" value="disabled">
+        <input type="submit" class="btn btn-danger" value="Disable User"/>
+    {{/is}}
+    {{#is status equal="requested"}}
+      <input type="hidden" name="status" value="active">
+      <input type="submit" class="btn btn-primary" value="Approve User"/>
+    {{/is}}
+    {{#is status equal="disabled"}}
+      <input type="hidden" name="status" value="active">
+      <input type="submit" class="btn btn-success" value="Enable User"/>
+    {{/is}}
+  </form>
+</div>
+{{> users/partials/extraFields}}
