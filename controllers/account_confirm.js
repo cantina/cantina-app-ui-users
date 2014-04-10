@@ -62,7 +62,7 @@ function process (req, res, next) {
   var user = res.vars.user;
   delete res.vars.user;
 
-  var minPasswordLen = app.conf.get('users-ui:password_min_length') || 5;
+  var minPasswordLen = app.conf.get('app-ui-users:password_min_length') || 5;
 
   if (!req.body) {
     return next(new Error('Invalid post data'));

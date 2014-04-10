@@ -1,7 +1,7 @@
 var app = require('cantina')
   , _ = require('underscore')
   , controller = module.exports = app.controller()
-  , registerRedirectPath = app.conf.get('users-ui:registerRedirect') || '/registered';
+  , registerRedirectPath = app.conf.get('app-ui-users:registerRedirect') || '/registered';
 
 require('cantina-email');
 
@@ -20,7 +20,7 @@ function loggedInRedirect (req, res, next) {
 function values (req, res, next) {
   res.vars.values = req.body || {};
   res.vars.query = req.query || {};
-  res.vars.approvalRequired = app.conf.get('users-ui:require_account_approval');
+  res.vars.approvalRequired = app.conf.get('app-ui-users:require_account_approval');
   next();
 }
 
@@ -74,7 +74,7 @@ function createAccountRequest (req, res, next) {
     }
     else {
       var userVars = _.pick(req.body, Object.keys(app.schemas.user.properties));
-      if (app.conf.get('users-ui:require_account_approval')) {
+      if (app.conf.get('app-ui-users:require_account_approval')) {
         userVars.status  || (userVars.status = 'requested');
       }
       else {

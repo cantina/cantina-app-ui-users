@@ -1,11 +1,11 @@
-cantina-app-users-ui
+cantina-app-ui-users
 ====================
 
 Drop-in UI for cantina-app-users
 
 Usage
 ------
-Just include cantina-app-users-ui in your main app file and start using the
+Just include cantina-app-ui-users in your main app file and start using the
 default UI.
 
 You can optionally extend the UI implementation by adding your own templates
@@ -21,7 +21,7 @@ app.boot(function (err) {
   if (err) throw err;
 
   require('cantina-web');
-  require('cantina-app-users-ui');
+  require('cantina-app-ui-users');
 
   app.start();
 });

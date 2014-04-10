@@ -91,7 +91,7 @@ function loadToken (req, res, next) {
 
 function processReset (req, res, next) {
   if (res.vars.error) return next();
-  var minPasswordLen = app.conf.get('users-ui:password_min_length') || 5;
+  var minPasswordLen = app.conf.get('app-ui-users:password_min_length') || 5;
   if (!req.body.pass) {
     res.formError('pass', 'Password is required.');
   }
