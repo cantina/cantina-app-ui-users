@@ -3,7 +3,7 @@
     <h3>{{#if approvalRequired}}Request Account{{else}}Register{{/if}}</h3>
     <form class="register account" action="/register" method="POST">
       <div class="form-group {{#if formErrors.email}} error{{/if}} email">
-        <input name="email" type="text" autocomplete="off" id="email-register" placeholder="Email Address" class="form-control" value="{{#unless loginErrors}}{{values.email}}{{/unless}}">
+        <input name="email" type="text" autocomplete="off" id="email-register" placeholder="Email Address" class="form-control" value="{{values.email}}">
         {{#if formErrors.email}}<span class="help-block">{{formErrors.email}}</span>{{/if}}
       </div>
       <div class="controls">

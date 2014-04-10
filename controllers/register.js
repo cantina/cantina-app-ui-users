@@ -86,10 +86,15 @@ function createAccountRequest (req, res, next) {
       };
       var user = app.collections.users.create(userVars);
       app.collections.users.save(user, function (err) {
-        if (err && err.type !== 'duplicate') {
-          return next(err);
-        }
 
+        // TODO: - db agnostic error handling
+        if (err && err.toString().match(/duplicate key error/) && err.toString().match(/email_lc/)){
+          res.formError('email', 'Email already registered.');
+          return next();
+        }
+        else if (err) {
+          return res.renderError(err);
+        }
         if (user.status === 'requested') {
           res.setMessage([ "A follow-up email will be sent to the address you provided pending account approval."]
             .join(' '), 'success');
