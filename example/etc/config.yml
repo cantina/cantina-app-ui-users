@@ -1,0 +1,5 @@
+site:
+  title: Example Site
+  email: dev@terraeclipse.com
+  domain: localhost:3000
+  protocol: http

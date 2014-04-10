@@ -1,0 +1,27 @@
+<div class="user-form forgot-password-form">
+  <div class="content">
+    {{#if success}}
+      <h3>We've found your account!</h3>
+      <p class="instructions">Please check your email shortly for instructions on how to reset your password.</p>
+    {{else}}
+      <h3>Forgot your password?</h3>
+      <p class="instructions">
+        Enter the email address matching your account in the field below. We'll send you instructions on how to reset your password.
+      </p>
+      <form id="forgot" method="post">
+        <div class="form-group{{#if formErrors.email}} error{{/if}} email">
+          <div class="controls">
+            <input name="email" type="text" id="email" class="form-control" value="{{values.email}}" placeholder="Enter Your Email Address...">
+            {{#if formErrors.email}} <span class="help-inline">{{formErrors.email}}</span>{{/if}}
+          </div>
+        </div>
+        {{> users/partials/extraFields}}
+        <div class="form-group submit">
+          <div class="controls clearfix">
+            <input type="submit" class="btn btn-primary pull-right submit" value="Send Reset Info">
+          </div>
+        </div>
+      </form>
+    {{/if}}
+  </div>
+</div>
