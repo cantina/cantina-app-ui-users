@@ -5,13 +5,13 @@
       Please enter a new password below to access your Member Site account.
     </p>
     <form id="forgot" method="post" class="form">
-      <div class="form-group{{#if formErrors.pass}} error{{/if}} pass">
+      <div class="form-group{{#if formErrors.pass}} has-error{{/if}} pass">
         <div class="controls">
           <input name="pass" type="password" class="form-control" placeholder="New Password">
           {{#if formErrors.pass}} <span class="help-inline">{{formErrors.pass}}</span>{{/if}}
         </div>
       </div>
-      <div class="form-group{{#if formErrors.pass2}} error{{/if}} pass2">
+      <div class="form-group{{#if formErrors.pass2}} has-error{{/if}} pass2">
         <div class="controls">
           <input name="pass2" type="password" class="form-control" placeholder="Re-enter New password">
           {{#if formErrors.pass2}} <span class="help-inline">{{formErrors.pass2}}</span>{{/if}}

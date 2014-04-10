@@ -9,7 +9,7 @@
         Enter the email address matching your account in the field below. We'll send you instructions on how to reset your password.
       </p>
       <form id="forgot" method="post">
-        <div class="form-group{{#if formErrors.email}} error{{/if}} email">
+        <div class="form-group{{#if formErrors.email}} has-error{{/if}} email">
           <div class="controls">
             <input name="email" type="text" id="email" class="form-control" value="{{values.email}}" placeholder="Enter Your Email Address...">
             {{#if formErrors.email}} <span class="help-inline">{{formErrors.email}}</span>{{/if}}

@@ -2,16 +2,16 @@
   {{#unless postRequest}}
     <h3>{{#if approvalRequired}}Request Account{{else}}Register{{/if}}</h3>
     <form class="register account" action="/register" method="POST">
-      <div class="form-group {{#if formErrors.email}} error{{/if}} email">
+      <div class="form-group {{#if formErrors.email}} has-error{{/if}} email">
         <input name="email" type="text" autocomplete="off" id="email-register" placeholder="Email Address" class="form-control" value="{{values.email}}">
         {{#if formErrors.email}}<span class="help-block">{{formErrors.email}}</span>{{/if}}
       </div>
       <div class="controls">
-        <div class="form-group {{#if formErrors.firstname}} error{{/if}} firstname">
+        <div class="form-group {{#if formErrors.firstname}} has-error{{/if}} firstname">
           <input name="firstname" type="text" autocomplete="off" id="firstname-register" placeholder="First Name" class="form-control" value="{{values.firstname}}">
           {{#if formErrors.firstname}}<span class="help-block">{{formErrors.firstname}}</span>{{/if}}
         </div>
-        <div class="form-group {{#if formErrors.lastname}} error{{/if}} lastname">
+        <div class="form-group {{#if formErrors.lastname}} has-error{{/if}} lastname">
           <input name="lastname" type="text" autocomplete="off" id="lastname-register" placeholder="Last Name" class="form-control" value="{{values.lastname}}">
           {{#if formErrors.lastname}}<span class="help-block">{{formErrors.lastname}}</span>{{/if}}
         </div>
