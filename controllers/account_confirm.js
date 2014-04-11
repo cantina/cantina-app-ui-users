@@ -11,7 +11,7 @@ app.conf.add({
        users: {
          passwordMinLength: 5,
          account_confirm: {
-           route: '/account_confirm',
+           route: '/account-confirm',
            resendRoute: '/account-confirm/resend'
          }
        }
