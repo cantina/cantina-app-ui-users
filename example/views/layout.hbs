@@ -25,6 +25,7 @@
           <li><a href="/login">Login</a></li>
           <li><a href="/forgot">Forgot</a></li>
           <li><a href="/register">Register</a></li>
+          <li><a href="/admin">Admin</a></li>
           <li><a href="/logout">Logout</a></li>
         </ul>
       </div>
@@ -33,7 +34,7 @@
 </header>
 <section id="page-body" class="clearfix">
   <div id="page-main">
-    <div class="main-inner col-lg-4 col-lg-offset-4">
+    <div class="main-inner {{#if admin}}col-lg-12{{else}}col-lg-4 col-lg-offset-4{{/if}}">
       {{{content}}}
     </div>
   </div>

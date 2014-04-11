@@ -1,14 +1,28 @@
 var app = require('cantina')
   , controller = module.exports = app.controller();
 
+app.conf.add({
+  app: {
+    ui: {
+      users: {
+        passwordMinLength: 5,
+        forgot: {
+          route: '/forgot'
+        }
+      }
+    }
+  }
+});
+var conf = app.conf.get('app:ui:users');
+
 require('cantina-tokens');
 require('cantina-email');
 
-controller.add('/forgot*', [loggedInCheck, values]);
-controller.get('/forgot', forgot);
-controller.post('/forgot', [processForgot, forgot]);
-controller.get('/forgot/:token', [loadToken, resetForm]);
-controller.post('/forgot/:token', [loadToken, processReset, resetForm]);
+controller.add(conf.forgot.route + '*', [loggedInCheck, values]);
+controller.get(conf.forgot.route, forgot);
+controller.post(conf.forgot.route, [processForgot, forgot]);
+controller.get(conf.forgot.route + '/:token', [loadToken, resetForm]);
+controller.post(conf.forgot.route + '/:token', [loadToken, processReset, resetForm]);
 
 function loggedInCheck (req, res, next) {
   if (req.user) {
@@ -91,12 +105,12 @@ function loadToken (req, res, next) {
 
 function processReset (req, res, next) {
   if (res.vars.error) return next();
-  var minPasswordLen = app.conf.get('app-ui-users:password_min_length') || 5;
+
   if (!req.body.pass) {
     res.formError('pass', 'Password is required.');
   }
-  else if (req.body.pass.length < minPasswordLen) {
-    res.formError('pass', 'Password must be at least ' + minPasswordLen + ' characters long.');
+  else if (req.body.pass.length < conf.passwordMinLength) {
+    res.formError('pass', 'Password must be at least ' + conf.passwordMinLength + ' characters long.');
   }
   else if (!req.body.pass2) {
     res.formError('pass2', 'Password confirmation required.');
