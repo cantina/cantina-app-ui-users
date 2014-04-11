@@ -107,6 +107,11 @@ to hook in and add own validation to submitted form.
 - **route:** `/account-confirm/:token`, `/account-confirm/resend`
 - **template:** `users/account_confirm`
 
+####Administrate Users
+
+- **route:** `/admin/users`
+- **template:** `users/administrate_users`, `users/partials/user`
+
 ###Partials
 
 #### `users/partials/extraFields`
