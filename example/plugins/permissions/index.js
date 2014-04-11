@@ -2,8 +2,8 @@ var app = require('cantina');
 
 require('cantina-permissions');
 
-app.permissions.define('users', {
-  admin: ['administrate']
+app.permissions.define('site', {
+  admin: ['administrate users']
 });
 
 
@@ -13,6 +13,6 @@ app.hook('start').last(function (done) {
     if (!admin) {
       return done();
     }
-    app.permissions.users.grant('admin', admin, done);
+    app.permissions.site.grant('admin', admin, done);
   });
 });

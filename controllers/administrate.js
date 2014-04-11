@@ -8,8 +8,8 @@ app.conf.add({
         admin: {
           route: '/admin',
           permission: {
-            context: 'users',
-            action: 'administrate'
+            context: 'site',
+            action: 'administrate users'
           }
         }
       }
