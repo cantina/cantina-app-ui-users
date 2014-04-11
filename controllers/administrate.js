@@ -6,7 +6,7 @@ app.conf.add({
     ui: {
       users: {
         admin: {
-          route: '/admin',
+          route: '/admin/users',
           permission: {
             context: 'site',
             action: 'administrate users'
