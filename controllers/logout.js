@@ -7,6 +7,22 @@ var sessionConf = app.conf.get('session') || {}
 var logoutPath = app.conf.get('auth:logoutPath') || '/logout'
   , loginPath = app.conf.get('auth:loginPath') || '/login';
 
+app.conf.add({
+  app: {
+    ui: {
+      users: {
+        logout: {
+          enabled: true
+        }
+      }
+    }
+  }
+});
+var conf = app.conf.get('app:ui:users:logout');
+if (!conf.enabled) {
+  return;
+}
+
 app.middleware.remove(logoutPath);
 controller.get(logoutPath, function (req, res, next) {
   app.auth.logOut(req, function (err) {

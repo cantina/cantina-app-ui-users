@@ -7,6 +7,7 @@ app.conf.add({
       users: {
         passwordMinLength: 5,
         forgot: {
+          enabled: true,
           route: '/forgot'
         }
       }
@@ -14,6 +15,9 @@ app.conf.add({
   }
 });
 var conf = app.conf.get('app:ui:users');
+if (!conf.forgot.enabled) {
+  return;
+}
 
 require('cantina-tokens');
 require('cantina-email');

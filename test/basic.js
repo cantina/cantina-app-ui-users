@@ -77,4 +77,12 @@ describe('basic', function () {
       done();
     });
   });
+
+  it('can disable a default controller', function (done) {
+    request('http://localhost:3000/activate', function (err, res, body) {
+      assert.ifError(err);
+      assert.equal(res.statusCode, 404);
+      done();
+    });
+  });
 });

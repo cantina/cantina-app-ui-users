@@ -7,6 +7,7 @@ app.conf.add({
       users: {
         admin: {
           route: '/admin/users',
+          enabled: true,
           permission: {
             context: 'site',
             action: 'administrate users'
@@ -18,6 +19,9 @@ app.conf.add({
 });
 
 var conf = app.conf.get('app:ui:users:admin');
+if (!conf.enabled) {
+  return;
+}
 require('cantina-permissions');
 
 controller.get(conf.route, [authRedirect, loadUsers, page]);

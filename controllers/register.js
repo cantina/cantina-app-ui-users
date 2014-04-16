@@ -9,13 +9,17 @@ app.conf.add({
       users: {
         register: {
           route: '/register',
-          redirect: '/registered'
+          redirect: '/registered',
+          enabled: true
         }
       }
     }
   }
 });
 var conf = app.conf.get('app:ui:users:register');
+if (!conf.enabled) {
+  return;
+}
 
 controller.get(conf.route, [loggedInRedirect, values, register]);
 controller.post(conf.route, [loggedInRedirect, values, processRequest, register]);

@@ -11,6 +11,7 @@ app.conf.add({
        users: {
          passwordMinLength: 5,
          account_confirm: {
+           enabled: true,
            route: '/account-confirm',
            resendRoute: '/account-confirm/resend'
          }
@@ -19,6 +20,9 @@ app.conf.add({
    }
 });
 var conf = app.conf.get('app:ui:users');
+if (!conf.account_confirm.enabled) {
+  return;
+}
 
 function values (req, res, next) {
   res.vars.values = req.body || {};

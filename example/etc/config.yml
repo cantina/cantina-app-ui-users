@@ -3,3 +3,8 @@ site:
   email: dev@terraeclipse.com
   domain: localhost:3000
   protocol: http
+app:
+  ui:
+    users:
+      account_confirm:
+        enabled: false
