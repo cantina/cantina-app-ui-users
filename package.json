@@ -1,7 +1,7 @@
 {
   "name": "cantina-app-ui-users",
   "private": true,
-  "version": "0.0.0",
+  "version": "3.0.0",
   "description": "Drop-in UI for cantina-app-users",
   "main": "cantina-app-ui-users.js",
   "scripts": {
