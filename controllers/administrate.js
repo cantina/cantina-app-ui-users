@@ -46,9 +46,7 @@ function authRedirect (req, res, next) {
 function loadUsers (req, res, next) {
   app.collections.users.list({}, function (err, users) {
     if (err) return res.renderError(err);
-    res.vars.users = users.map(function (user) {
-      return app.users.sanitize(user);
-    });
+    res.vars.users = users;
     next();
   });
 }

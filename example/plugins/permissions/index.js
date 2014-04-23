@@ -8,7 +8,7 @@ app.permissions.define('site', {
 
 
 app.hook('start').last(function (done) {
-  app.collections.users.findOne({email_lc: app.conf.get('app:users:admin:attributes:email')}, function (err, admin) {
+  app.collections.users.load({email_lc: app.conf.get('app:users:admin:attributes:email')}, function (err, admin) {
     if (err) return done(err);
     if (!admin) {
       return done();

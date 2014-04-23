@@ -58,7 +58,6 @@ function loadToken (req, res, next) {
             res.vars.error = 'You are already logged in with a different account. Please log out, re-send the activation email, and try again.';
             return next();
           }
-          app.users.sanitize(user);
           res.vars.user = user;
           res.vars.values = _.extend({}, user, res.vars.values);
           next();
@@ -103,28 +102,30 @@ function process (req, res, next) {
       return next();
     }
     user.status = 'active';
-    app.users.setPassword(user, req.body.pass, function (err) {
+    app.auth.setPassword(user, req.body.pass, function (err) {
       if (err) return res.renderError(err);
-      var userVars = _.pick(req.body, Object.keys(app.schemas.user.properties));
-      user = _.extend(user, userVars);
-      app.collections.users.save(user, function (err) {
+      app.collections.users._update({id: user.id}, {$set: {auth: user.auth}}, function (err) {
+        if (err) return res.renderError(err);
+        user = _.extend(user, req.body);
+        app.collections.users.save(user, function (err) {
 
-        // TODO: - db agnostic error handling
-        if (err && err.toString().match(/duplicate key error/)) {
-          if (err.toString().match(/username_lc/)){
-            res.formError('username', 'Username already registered.');
+          // TODO: - db agnostic error handling
+          if (err && err.toString().match(/duplicate key error/)) {
+            if (err.toString().match(/username_lc/)){
+              res.formError('username', 'Username already registered.');
+            }
+            return next();
           }
-          return next();
-        }
 
-        if (err) return next(err);
-        delete res.vars.values;
-        app.tokens.delete(req.params.token, 'account', function (err) {
-          if (err) return res.renderError(err);
-          app.auth.logIn(user, req, res, function (err) {
+          if (err) return next(err);
+          delete res.vars.values;
+          app.tokens.delete(req.params.token, 'account', function (err) {
             if (err) return res.renderError(err);
-            res.setMessage('Thank you for completing your registration. Your account is now active.', 'success');
-            res.redirect('/');
+            app.auth.logIn(user, req, res, function (err) {
+              if (err) return res.renderError(err);
+              res.setMessage('Thank you for completing your registration. Your account is now active.', 'success');
+              res.redirect('/');
+            });
           });
         });
       });

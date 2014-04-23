@@ -77,10 +77,9 @@ function processRequest (req, res, next) {
 }
 
 function createAccountRequest (req, res, next) {
-  app.collections.users.findOne({email: req.body.email, status: 'invited'}, function (err, invitedUser) {
+  app.collections.users.load({email_lc: req.body.email.toLowerCase(), status: 'invited'}, function (err, invitedUser) {
     if (err) return next(err);
     if (invitedUser) {
-      app.users.sanitize(invitedUser);
       app.email.send('users/account_confirm', {user: invitedUser}, function (err) {
         if (err) app.emit('error', err);
       });
@@ -89,18 +88,17 @@ function createAccountRequest (req, res, next) {
       res.redirect(conf.redirect);
     }
     else {
-      var userVars = _.pick(req.body, Object.keys(app.schemas.user.properties));
       if (app.conf.get('app-ui-users:require_account_approval')) {
-        userVars.status  || (userVars.status = 'requested');
+        req.body.status  || (req.body.status = 'requested');
       }
       else {
-        userVars.status || (userVars.status = 'unconfirmed');
+        req.body.status || (req.body.status = 'unconfirmed');
       }
-      userVars.name = {
+      req.body.name = {
         first: req.body.firstname,
         last: req.body.lastname
       };
-      var user = app.collections.users.create(userVars);
+      var user = app.collections.users.create(req.body);
       app.collections.users.save(user, function (err) {
 
         // TODO: - db agnostic error handling
@@ -117,7 +115,6 @@ function createAccountRequest (req, res, next) {
           res.redirect(conf.redirect);
         }
         else {
-          app.users.sanitize(user);
           app.email.send('users/account_confirm', {user: user}, function (err) {
             if (err) app.emit('error', err);
           });

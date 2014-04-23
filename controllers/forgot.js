@@ -62,13 +62,12 @@ function processForgot (req, res, next) {
   app.hook('controller:form:validate:forgot').runSeries(req, res, function (err) {
     if (err) return res.renderError(err);
 
-    app.collections.users.findOne({email_lc: req.body.email.trim()}, function (err, user) {
+    app.collections.users.load({email_lc: req.body.email.trim()}, function (err, user) {
       if (err) return res.renderError(err);
       if (!user) {
         res.formError('email', 'Email address not found.');
         return next();
       }
-      app.users.sanitize(user);
       app.email.send('users/password_reset', { user: user }, function (err) {
         if (err) return res.renderError(err);
         res.vars.success = 'Please check your email for further instructions.';
@@ -90,7 +89,6 @@ function loadToken (req, res, next) {
             res.vars.error = 'You may not reset another user\'s password.';
             return next();
           }
-          app.users.sanitize(user);
           res.vars.user = user;
           next();
         }
@@ -129,9 +127,9 @@ function processReset (req, res, next) {
       return next();
     }
 
-    app.users.setPassword(res.vars.user, req.body.pass, function (err) {
+    app.auth.setPassword(res.vars.user, req.body.pass, function (err) {
       if (err) return res.renderError(err);
-      app.collections.users.save(res.vars.user, function (err) {
+      app.collections.users._update({id: res.vars.user.id}, {$set: {auth: res.vars.user.auth}}, function (err) {
         if (err) return res.renderError(err);
         delete res.vars.values;
         app.tokens.delete(req.params.token, 'password-reset', function (err) {

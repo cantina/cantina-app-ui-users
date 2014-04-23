@@ -57,15 +57,20 @@ function processLogin (req, res, next) {
       return next();
     }
 
-    app.users.authenticate(req.body.email.trim(), req.body.pass, req, res, function (err) {
+    app.collections.users.findByAuth(req.body.email.trim(), req.body.pass, function (err, user) {
       if (err) {
-        res.formError('login', err.message);
+        res.renderError(err);
+      }
+      else if (!user) {
+        res.formError('login', 'Invalid email/password combination.');
         return next();
       }
-      var redirectUrl = req.session.redirectUrl || '/';
-      // Clean-up the session, if necessary
-      req.session.redirectUrl && delete req.session.redirectUrl;
-      res.redirect(redirectUrl);
+      app.auth.logIn(user, req, res, function (err) {
+        var redirectUrl = req.session.redirectUrl || '/';
+        // Clean-up the session, if necessary
+        req.session.redirectUrl && delete req.session.redirectUrl;
+        res.redirect(redirectUrl);
+      });
     });
   });
 }
