@@ -1,0 +1,37 @@
+ui:
+  users:
+    # Password min length
+    passwordMinLength: 5
+
+    # Account confirmation
+    account_confirm:
+      enabled: true
+      route: '/account-confirm'
+      resendRoute: '/account-confirm/resend'
+
+    # Admin user
+    admin:
+      enabled: true
+      route: '/admin/users'
+      permission:
+        context: 'site'
+        action: 'administrate users'
+
+    # Password reset
+    forgot:
+      enabled: true
+      route: '/forgot'
+
+    # Login
+    login:
+      enabled: true
+
+    # Log out
+    logout:
+      enabled: true
+
+    # Registration
+    register:
+      enabled: true
+      route: '/register'
+      redirect: '/registered'

@@ -1,21 +1,9 @@
 var app = require('cantina')
   , _ = require('underscore')
-  , controller = module.exports = app.controller()
+  , controller = module.exports = app.controller();
 
 require('cantina-email');
-app.conf.add({
-  app: {
-    ui: {
-      users: {
-        register: {
-          route: '/register',
-          redirect: '/registered',
-          enabled: true
-        }
-      }
-    }
-  }
-});
+
 var conf = app.conf.get('app:ui:users:register');
 if (!conf.enabled) {
   return;

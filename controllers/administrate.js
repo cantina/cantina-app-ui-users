@@ -1,23 +1,6 @@
 var app = require('cantina')
   , controller = module.exports = app.controller();
 
-app.conf.add({
-  app: {
-    ui: {
-      users: {
-        admin: {
-          route: '/admin/users',
-          enabled: true,
-          permission: {
-            context: 'site',
-            action: 'administrate users'
-          }
-        }
-      }
-    }
-  }
-});
-
 var conf = app.conf.get('app:ui:users:admin');
 if (!conf.enabled) {
   return;

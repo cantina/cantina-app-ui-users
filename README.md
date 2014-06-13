@@ -119,3 +119,10 @@ to hook in and add own validation to submitted form.
 Applies an additional partial to each of the above forms, allowing the app or
 plugin to extend forms. Just include an array of template paths on
 `res.formFields` and they will be appended to the default forms.
+
+
+- - -
+
+### Developed by [Terra Eclipse](http://www.terraeclipse.com)
+Terra Eclipse, Inc. is a nationally recognized political technology and
+strategy firm located in Santa Cruz, CA and Washington, D.C.

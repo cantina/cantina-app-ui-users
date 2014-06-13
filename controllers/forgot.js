@@ -1,19 +1,6 @@
 var app = require('cantina')
   , controller = module.exports = app.controller();
 
-app.conf.add({
-  app: {
-    ui: {
-      users: {
-        passwordMinLength: 5,
-        forgot: {
-          enabled: true,
-          route: '/forgot'
-        }
-      }
-    }
-  }
-});
 var conf = app.conf.get('app:ui:users');
 if (!conf.forgot.enabled) {
   return;

@@ -1,8 +1,10 @@
 {
   "name": "cantina-app-ui-users",
-  "private": true,
-  "version": "3.0.0",
   "description": "Drop-in UI for cantina-app-users",
+  "version": "4.0.0-dev",
+  "publishConfig": {
+    "registry": "https://npm-registry.terraeclipse.com"
+  },
   "main": "cantina-app-ui-users.js",
   "scripts": {
     "test": "node_modules/.bin/mocha"
@@ -21,20 +23,34 @@
     "underscore": "~1.6.0",
     "idgen": "~2.0.2"
   },
+  "peerDependencies": {
+    "cantina": "~4.0.0",
+    "cantina-web": "~4.0.0",
+    "cantina-models": "~4.0.0",
+    "cantina-mongo": "~4.0.0",
+    "cantina-auth": "~4.0.0",
+    "cantina-redis": "~4.0.0",
+    "cantina-session": "~4.0.0",
+    "cantina-tokens": "~4.0.0",
+    "cantina-validators": "~4.0.0",
+    "cantina-email": "~4.0.0",
+    "cantina-permissions": "~4.0.0",
+    "cantina-app-users": "~4.0.0"
+  },
   "devDependencies": {
-    "cantina": "cantina/cantina#3.x",
-    "cantina-web": "cantina/cantina-web#3.2.x",
-    "cantina-models": "cantina/cantina-models#3.1.x",
-    "cantina-mongo": "cantina/cantina-mongo#3.x",
-    "cantina-auth": "cantina/cantina-auth#3.x",
-    "cantina-redis": "cantina/cantina-redis#3.x",
-    "cantina-session": "cantina/cantina-session#3.x",
-    "cantina-tokens": "cantina/cantina-tokens#3.x",
-    "cantina-validators": "cantina/cantina-validators#3.x",
-    "cantina-email": "cantina/cantina-email#3.x",
-    "cantina-permissions": "cantina/cantina-permissions#3.x",
-    "cantina-app-users": "cantina/cantina-app-users#3.x",
     "mocha": "^1.18.2",
-    "request": "~2.34.0"
+    "request": "~2.34.0",
+    "cantina": "~4.0.0",
+    "cantina-web": "~4.0.0",
+    "cantina-models": "~4.0.0",
+    "cantina-mongo": "~4.0.0",
+    "cantina-auth": "~4.0.0",
+    "cantina-redis": "~4.0.0",
+    "cantina-session": "~4.0.0",
+    "cantina-tokens": "~4.0.0",
+    "cantina-validators": "~4.0.0",
+    "cantina-email": "~4.0.0",
+    "cantina-permissions": "~4.0.0",
+    "cantina-app-users": "~4.0.0"
   }
 }

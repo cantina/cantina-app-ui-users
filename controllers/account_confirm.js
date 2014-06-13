@@ -5,20 +5,6 @@ var app = require('cantina')
 require('cantina-tokens');
 require('cantina-email');
 
-app.conf.add({
-   app: {
-     ui: {
-       users: {
-         passwordMinLength: 5,
-         account_confirm: {
-           enabled: true,
-           route: '/account-confirm',
-           resendRoute: '/account-confirm/resend'
-         }
-       }
-     }
-   }
-});
 var conf = app.conf.get('app:ui:users');
 if (!conf.account_confirm.enabled) {
   return;

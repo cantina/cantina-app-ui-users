@@ -2,17 +2,6 @@ var app = require('cantina')
   , controller = module.exports = app.controller()
   , loginPath = app.conf.get('auth:loginPath') || '/login';
 
-app.conf.add({
-  app: {
-    ui: {
-      users: {
-        login: {
-          enabled: true
-        }
-      }
-    }
-  }
-});
 var conf = app.conf.get('app:ui:users:login');
 if (!conf.enabled) {
   return;

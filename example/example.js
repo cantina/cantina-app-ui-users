@@ -7,6 +7,8 @@ app.boot(function (err) {
   require('cantina-app-users');
   require('../');
 
+  app.load('web');
+
   // Error handler.
   app.on('error', function (err) {
     if (err.stack) {
