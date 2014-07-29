@@ -1,11 +1,11 @@
-var app = require('cantina');
+var app = require('cantina').createApp();
 
 app.boot(function (err) {
   if (err) throw err;
 
-  require('cantina-web');
-  require('cantina-app-users');
-  require('../');
+  app.require('cantina-web');
+  app.require('cantina-app-users');
+  app.require('../');
 
   app.load('web');
 

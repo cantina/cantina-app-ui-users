@@ -1,61 +1,63 @@
-var app = require('cantina')
-  , controller = module.exports = app.controller();
+module.exports = function (app) {
+  var controller = app.controller()
+    , conf = app.conf.get('app:ui:users:admin');
 
-var conf = app.conf.get('app:ui:users:admin');
-if (!conf.enabled) {
-  return;
-}
-require('cantina-permissions');
-
-controller.get(conf.route, [authRedirect, loadUsers, page]);
-controller.post(conf.route, [authRedirect, modifyUser, loadUsers, page]);
-
-
-function authRedirect (req, res, next) {
-  if (!req.isAuthenticated()) {
-    return res.redirect('/');
+  if (!conf.enabled) {
+    return;
   }
-  app.permissions[conf.permission.context].can(conf.permission.action, req.user, function (err, can) {
-    if (err) return res.renderError(err);
-    if (!can) {
+  app.require('cantina-permissions');
+
+  controller.get(conf.route, [authRedirect, loadUsers, page]);
+  controller.post(conf.route, [authRedirect, modifyUser, loadUsers, page]);
+
+  function authRedirect (req, res, next) {
+    if (!req.isAuthenticated()) {
       return res.redirect('/');
     }
-    res.vars.admin = true;
-    res.vars.postPath = conf.route;
-    next();
-  });
-}
-
-function loadUsers (req, res, next) {
-  app.collections.users.list({}, function (err, users) {
-    if (err) return res.renderError(err);
-    res.vars.users = users;
-    next();
-  });
-}
-
-function modifyUser (req, res, next) {
-  if (!req.body.user_id || !req.body.status) {
-    return res.renderStatus(400);
-  }
-  else {
-    app.collections.users.load(req.body.user_id, function (err, user) {
+    app.permissions[conf.permission.context].can(conf.permission.action, req.user, function (err, can) {
       if (err) return res.renderError(err);
-      if (user) {
-        user.status = req.body.status;
-        app.collections.users.save(user, function (err) {
-          if (err) return res.renderError(err);
-          next();
-        });
+      if (!can) {
+        return res.redirect('/');
       }
-      else {
-        return res.renderStatus(404);
-      }
+      res.vars.admin = true;
+      res.vars.postPath = conf.route;
+      next();
     });
   }
-}
 
-function page (req, res, next) {
-  res.vars.title = res.vars.title || 'Administrate Users';
-  res.render('users/administrate_users', res.vars);
-}
+  function loadUsers (req, res, next) {
+    app.collections.users.list({}, function (err, users) {
+      if (err) return res.renderError(err);
+      res.vars.users = users;
+      next();
+    });
+  }
+
+  function modifyUser (req, res, next) {
+    if (!req.body.user_id || !req.body.status) {
+      return res.renderStatus(400);
+    }
+    else {
+      app.collections.users.load(req.body.user_id, function (err, user) {
+        if (err) return res.renderError(err);
+        if (user) {
+          user.status = req.body.status;
+          app.collections.users.save(user, function (err) {
+            if (err) return res.renderError(err);
+            next();
+          });
+        }
+        else {
+          return res.renderStatus(404);
+        }
+      });
+    }
+  }
+
+  function page (req, res, next) {
+    res.vars.title = res.vars.title || 'Administrate Users';
+    res.render('users/administrate_users', res.vars);
+  }
+
+  return controller;
+};
