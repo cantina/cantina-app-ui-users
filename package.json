@@ -1,7 +1,7 @@
 {
   "name": "cantina-app-ui-users",
   "description": "Drop-in UI for cantina-app-users",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "main": "cantina-app-ui-users.js",
   "scripts": {
     "test": "node_modules/.bin/mocha"
