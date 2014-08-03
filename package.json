@@ -2,9 +2,6 @@
   "name": "cantina-app-ui-users",
   "description": "Drop-in UI for cantina-app-users",
   "version": "4.1.0",
-  "publishConfig": {
-    "registry": "https://npm-registry.terraeclipse.com"
-  },
   "main": "cantina-app-ui-users.js",
   "scripts": {
     "test": "node_modules/.bin/mocha"
@@ -13,6 +10,12 @@
     "type": "git",
     "url": "git://github.com/cantina/cantina-app-ui-users.git"
   },
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  ],
   "author": "Erin LeSavoy <erin@terraeclipse.com>",
   "license": "none",
   "bugs": {

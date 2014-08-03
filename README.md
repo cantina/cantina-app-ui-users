@@ -15,38 +15,38 @@ to change the default controller behavior
 Example
 -------
 ```js
-var app = require('cantina');
+var app = require('cantina').createApp();
 
 app.boot(function (err) {
   if (err) throw err;
 
-  require('cantina-web');
-  require('cantina-app-ui-users');
+  app.require('cantina-web');
+  app.require('cantina-app-ui-users');
 
   app.start();
 });
 ```
 
 ```js
-var app = require('cantina');
-
-app.hook('controller:before:render:users/register').add(function (req, res, context, options, next) {
-  context.formFields || (context.formFields = []);
-  context.formFields.push({
-    template: 'partials/users/registerFields'
+module.exports = function (app) {
+  app.hook('controller:before:render:users/register').add(function (req, res, context, options, next) {
+    context.formFields || (context.formFields = []);
+    context.formFields.push({
+      template: 'partials/users/registerFields'
+    });
+    next();
   });
-  next();
-});
 
-app.hook('controller:form:validate:register').add(function (req, res, next) {
-  if (!res.vars.values.organization) {
-    res.formError('organization', 'Organization is required.');
-  }
-  if (!res.vars.values.title) {
-    res.formError('title', 'Title is required.');
-  }
-  next();
-});
+  app.hook('controller:form:validate:register').add(function (req, res, next) {
+    if (!res.vars.values.organization) {
+      res.formError('organization', 'Organization is required.');
+    }
+    if (!res.vars.values.title) {
+      res.formError('title', 'Title is required.');
+    }
+    next();
+  });
+};
 ```
 
 ```hbs
